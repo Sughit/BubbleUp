@@ -1,4 +1,4 @@
-// src/pages/Simulation.js
+// src/page/Simulation.js
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
@@ -7,7 +7,6 @@ import {
   ALLOWED_SLUGS,
   parseNumbers,
   getGenerator,
-  colorFor,
 } from "../component/simulationHelper";
 
 export default function Simulation() {
@@ -141,8 +140,8 @@ export default function Simulation() {
             <div>
               <h1 className="text-2xl md:text-3xl font-bold">{title}</h1>
               <p className="text-sm text-zinc-400">
-                Roșu = comparare/swap, Galben = zonă activă, fiecare valoare are o
-                culoare stabilă; fundalul are <em>benzi</em> verticale pe poziții.
+                Fiecare <span className="text-rose-400 font-semibold">număr</span> este o bară roșie,
+                iar jos vezi marcajul subțire al <i>intervalului comparat</i>.
               </p>
               {banner && (
                 <div className="mt-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-amber-200 text-sm">
@@ -205,23 +204,23 @@ export default function Simulation() {
           </div>
         </div>
 
-        {/* Vizualizator cu benzi verticale (lanes) */}
+        {/* Vizualizator */}
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 md:p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)]">
-          {/* Container cu pattern de benzi verticale */}
-          <div
-            className="relative h-64 w-full rounded-xl p-2 ring-1 ring-slate-800 overflow-hidden"
-            style={{
-              backgroundImage:
-                // benzi verticale: 1px linie + spațiu, repetate pe lățimea containerului
-                "repeating-linear-gradient(to right, rgba(148,163,184,0.12) 0 1px, transparent 1px calc((100% / var(--ncols)) - 1px))",
-              // setăm numărul de coloane (poziții) ca variabilă CSS
-              ["--ncols"]: values.length,
-            }}
-          >
-            {/* Barele efective */}
-            <div className="absolute inset-2 flex items-end gap-1 md:gap-2">
+          <div className="relative h-72 w-full rounded-xl ring-1 ring-slate-800 overflow-hidden">
+            {/* GRID vertical finuț */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(to right, rgba(148,163,184,0.12) 0 1px, transparent 1px calc((100% / var(--ncols)) - 1px))",
+                ["--ncols"]: values.length,
+              }}
+            />
+
+            {/* ZONA BARE PRINCIPALE */}
+            <div className="absolute inset-x-3 top-3 bottom-10 flex items-stretch gap-1 md:gap-2">
               {values.map((v, idx) => {
-                const h = Math.round((v / maxVal) * 100);
+                const h = Math.max(4, Math.round((v / maxVal) * 100)); // înălțime ∝ v
                 const isA = idx === highlight.a;
                 const isB = idx === highlight.b;
                 const inRange =
@@ -229,45 +228,54 @@ export default function Simulation() {
                   idx >= highlight.range[0] &&
                   idx <= highlight.range[1];
 
-                // culoare stabilă per valoare (override la highlight)
-                let bg = colorFor(v, maxVal);
-                if (isA || isB) bg = "#ef4444"; // roșu tailwind-500
-                else if (inRange) bg = "#facc15"; // galben-400
-
-                const minWidthPct = Math.max(8, Math.floor(100 / Math.max(1, values.length)));
+                const base = "#ef4444";   // red-500
+                const strong = "#dc2626"; // red-600
+                const bg = (isA || isB || inRange) ? strong : base;
 
                 return (
-                  <div
-                    key={idx}
-                    className="flex-1 flex flex-col justify-end items-center"
-                    style={{ minWidth: `${minWidthPct}%` }}
-                  >
-                    {/* badge sus (valoarea pe bară) */}
-                    <div className="mb-1 text-[11px] font-mono text-zinc-200/90">
-                      {v}
-                    </div>
-
-                    {/* bara */}
+                  <div key={idx} className="flex-1 h-full flex flex-col justify-end items-center">
                     <div
-                      className="w-full rounded-t-xl transition-all duration-150"
+                      className="w-full rounded-t-lg transition-all duration-150 shadow-sm"
                       style={{ height: `${h}%`, backgroundColor: bg }}
                       title={`a[${idx}] = ${v}`}
                     />
-
-                    {/* etichetă mică jos (valoarea) */}
-                    <div className="text-[10px] text-gray-400 mt-1 font-mono">{v}</div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Index-uri pe axa X (jos) */}
-            <div className="absolute bottom-1 left-2 right-2 flex justify-between text-[10px] text-zinc-500 font-mono pointer-events-none">
-              {values.map((_, i) => (
-                <span key={i} style={{ width: `${100 / values.length}%`, textAlign: "center" }}>
-                  {i}
-                </span>
-              ))}
+            {/* BANDA INFERIOARĂ: marcaj comparat / range */}
+            <div className="absolute left-3 right-3 bottom-3 h-6">
+              <div className="flex h-full items-end gap-1 md:gap-2">
+                {values.map((_, idx) => {
+                  const isA = idx === highlight.a;
+                  const isB = idx === highlight.b;
+                  const inRange =
+                    highlight.range.length === 2 &&
+                    idx >= highlight.range[0] &&
+                    idx <= highlight.range[1];
+
+                  const active = isA || isB || inRange;
+                  return (
+                    <div key={idx} className="flex-1 flex items-end">
+                      <div
+                        className={`w-full rounded ${active ? "h-2" : "h-[3px]"}`}
+                        style={{
+                          backgroundColor: active ? "rgba(239,68,68,0.9)" : "rgba(239,68,68,0.3)",
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              {/* Index-uri subtile */}
+              <div className="mt-1 flex justify-between text-[10px] text-zinc-500 font-mono pointer-events-none">
+                {values.map((_, i) => (
+                  <span key={i} style={{ width: `${100 / values.length}%`, textAlign: "center" }}>
+                    {i}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -280,7 +288,7 @@ export default function Simulation() {
           </div>
         </div>
 
-        {/* Navigare rapidă între simulări */}
+        {/* Navigare rapidă */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
           {ALLOWED_SLUGS.map((slug) => (
             <Link
@@ -299,9 +307,7 @@ export default function Simulation() {
 
         {/* Input jos */}
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 md:p-6 space-y-2">
-          <label className="text-sm text-gray-300">
-            Numere (separate prin virgulă sau spațiu)
-          </label>
+          <label className="text-sm text-gray-300">Numere (virgulă sau spațiu)</label>
           <textarea
             className="w-full h-28 rounded-xl bg-slate-950/60 border border-slate-800 p-3 font-mono resize-y focus:outline-none focus:ring-2 focus:ring-indigo-400/40"
             value={inputText}
