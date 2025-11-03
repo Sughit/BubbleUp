@@ -44,10 +44,8 @@ const ALGORITHMS = {
   special: [
     { name: "Bitonic Sort", slug: "bitonic", complexities:{best:<>O(n·log² n)</>,avg:<>O(n·log² n)</>,worst:<>O(n·log² n)</>}, stable:false, inPlace:false, notes:"Sorting network; excelent pe GPU." },
     { name: "Odd-Even Merge Sort", slug: "odd-even-merge", complexities:{best:<>O(n·log² n)</>,avg:<>O(n·log² n)</>,worst:<>O(n·log² n)</>}, stable:false, inPlace:false, notes:"Rețea Batcher." },
-    { name: "Bogo Sort", slug: "bogo", complexities:{best:<>O(n)</>,avg:<>≈O(n·n!)</>,worst:<>—</>}, stable:false, inPlace:false, notes:"Algoritm de glumă." },
     { name: "Stooge Sort", slug: "stooge", complexities:{best:<>O(n<b><sup>2.7</sup></b>)</>,avg:<>O(n<b><sup>2.7</sup></b>)</>,worst:<>O(n<b><sup>2.7</sup></b>)</>}, stable:false, inPlace:true, notes:"Recursiv exotic." },
     { name: "Comb Sort", slug: "comb", complexities:{best:<>O(n·log n)</>,avg:<>≈O(n<b><sup>1.3</sup></b>–n<b><sup>2</sup></b>)</>,worst:<>O(n<b><sup>2</sup></b>)</>}, stable:false, inPlace:true, notes:"Gap shrink ~1.3." },
-    { name: "Sleep Sort", slug: "sleep", complexities:{best:<>—</>,avg:<>—</>,worst:<>—</>}, stable:false, inPlace:false, notes:"Trick concurent (timers)." },
     { name: "Flash Sort", slug: "flash", complexities:{best:<>O(n)</>,avg:<>≈O(n)</>,worst:<>O(n<b><sup>2</sup></b>)</>}, stable:false, inPlace:true, notes:"Distribuțional; alias Bucket în vizualizare." },
   ],
 };
@@ -188,6 +186,13 @@ export default function Home() {
                   title="Deschide simularea"
                 >
                   🔍 Simulează
+                </button>
+                <button
+                  onClick={() => navigate(`/code/${algo.slug}`)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm font-medium text-zinc-200 hover:bg-slate-800"
+                  title="Vezi codul (C++ / Java / Python)"
+                >
+                  💻 Cod
                 </button>
               </div>
             ))}

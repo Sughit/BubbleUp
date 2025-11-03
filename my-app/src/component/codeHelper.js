@@ -1,294 +1,551 @@
 // src/component/codeHelper.js
+// Coduri educaționale, concise. C++ folosește DOAR <iostream>.
 export const CODE = {
+  /* ───────── I. Simple ───────── */
   bubble: {
-    cpp: `#include <bits/stdc++.h>
+    cpp: `#include <iostream>
 using namespace std;
-void bubbleSort(vector<int>& a){
-  bool swapped=true; int n=a.size();
-  for(int i=0; i<n-1 && swapped; ++i){
-    swapped=false;
-    for(int j=0; j<n-1-i; ++j){
-      if(a[j] > a[j+1]){ swap(a[j], a[j+1]); swapped=true; }
-    }
-  }
-}
-int main(){ vector<int> a={5,3,8,4,2}; bubbleSort(a); for(int x:a) cout<<x<<" "; }`,
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i];
+bool sw=true;for(int i=0;i<n-1&&sw;i++){sw=false;for(int j=0;j<n-1-i;j++)if(a[j]>a[j+1]){int t=a[j];a[j]=a[j+1];a[j+1]=t;sw=true;}}
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
     java: `import java.util.*;
 public class Main{
-  static void bubbleSort(int[] a){
-    boolean swapped = true;
-    for(int i=0; i<a.length-1 && swapped; i++){
-      swapped = false;
-      for(int j=0; j<a.length-1-i; j++){
-        if(a[j] > a[j+1]){
-          int t=a[j]; a[j]=a[j+1]; a[j+1]=t; swapped=true;
-        }
-      }
-    }
-  }
-  public static void main(String[] args){
-    int[] a={5,3,8,4,2}; bubbleSort(a); System.out.println(Arrays.toString(a));
-  }
+  static void bubble(int[] a){ boolean sw=true; for(int i=0;i<a.length-1 && sw;i++){ sw=false; for(int j=0;j<a.length-1-i;j++) if(a[j]>a[j+1]){int t=a[j];a[j]=a[j+1];a[j+1]=t; sw=true; } } }
+  public static void main(String[] args){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); bubble(a); System.out.println(Arrays.toString(a)); }
 }`,
-    py: `def bubble_sort(a):
-    swapped = True
-    n = len(a)
+    py: `def bubble(a):
+    sw = True
     i = 0
-    while i < n-1 and swapped:
-        swapped = False
-        for j in range(0, n-1-i):
+    while i < len(a)-1 and sw:
+        sw = False
+        for j in range(0, len(a)-1-i):
             if a[j] > a[j+1]:
-                a[j], a[j+1] = a[j+1], a[j]
-                swapped = True
+                a[j], a[j+1] = a[j+1], a[j]; sw = True
         i += 1
-
-a = [5,3,8,4,2]
-bubble_sort(a)
-print(a)`
+n=int(input()); a=list(map(int,input().split()))
+bubble(a); print(*a)`
   },
   selection: {
-    cpp: `#include <bits/stdc++.h>
+    cpp: `#include <iostream>
 using namespace std;
-void selectionSort(vector<int>& a){
-  int n=a.size();
-  for(int i=0;i<n-1;i++){
-    int p=i;
-    for(int j=i+1;j<n;j++) if(a[j]<a[p]) p=j;
-    if(p!=i) swap(a[i],a[p]);
-  }
-}
-int main(){ vector<int>a={5,3,8,4,2}; selectionSort(a); for(int x:a) cout<<x<<" "; }`,
-    java: `import java.util.*;
-public class Main{
-  static void selectionSort(int[] a){
-    for(int i=0;i<a.length-1;i++){
-      int p=i;
-      for(int j=i+1;j<a.length;j++) if(a[j]<a[p]) p=j;
-      if(p!=i){ int t=a[i]; a[i]=a[p]; a[p]=t; }
-    }
-  }
-  public static void main(String[] args){
-    int[] a={5,3,8,4,2}; selectionSort(a); System.out.println(Arrays.toString(a));
-  }
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i];
+for(int i=0;i<n-1;i++){int p=i;for(int j=i+1;j<n;j++)if(a[j]<a[p])p=j; if(p!=i){int t=a[i];a[i]=a[p];a[p]=t;}}
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void sel(int[] a){ for(int i=0;i<a.length-1;i++){ int p=i; for(int j=i+1;j<a.length;j++) if(a[j]<a[p]) p=j; if(p!=i){int t=a[i];a[i]=a[p];a[p]=t;} } }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); sel(a); System.out.println(Arrays.toString(a)); }
 }`,
-    py: `def selection_sort(a):
-    n = len(a)
-    for i in range(n-1):
-        p = i
-        for j in range(i+1, n):
-            if a[j] < a[p]:
-                p = j
-        if p != i:
-            a[i], a[p] = a[p], a[i]
-
-a=[5,3,8,4,2]
-selection_sort(a)
-print(a)`
+    py: `def selection(a):
+    for i in range(len(a)-1):
+        p=i
+        for j in range(i+1,len(a)):
+            if a[j]<a[p]: p=j
+        if p!=i: a[i],a[p]=a[p],a[i]
+n=int(input()); a=list(map(int,input().split()))
+selection(a); print(*a)`
   },
   insertion: {
-    cpp: `#include <bits/stdc++.h>
+    cpp: `#include <iostream>
 using namespace std;
-void insertionSort(vector<int>& a){
-  for(int i=1;i<(int)a.size();i++){
-    int key=a[i], j=i-1;
-    while(j>=0 && a[j]>key){ a[j+1]=a[j]; j--; }
-    a[j+1]=key;
-  }
-}
-int main(){ vector<int>a={5,3,8,4,2}; insertionSort(a); for(int x:a) cout<<x<<" "; }`,
-    java: `import java.util.*;
-public class Main{
-  static void insertionSort(int[] a){
-    for(int i=1;i<a.length;i++){
-      int key=a[i], j=i-1;
-      while(j>=0 && a[j]>key){ a[j+1]=a[j]; j--; }
-      a[j+1]=key;
-    }
-  }
-  public static void main(String[] args){
-    int[] a={5,3,8,4,2}; insertionSort(a); System.out.println(Arrays.toString(a));
-  }
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i];
+for(int i=1;i<n;i++){int key=a[i],j=i-1;while(j>=0&&a[j]>key){a[j+1]=a[j];j--;}a[j+1]=key;}
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void ins(int[] a){ for(int i=1;i<a.length;i++){ int key=a[i], j=i-1; while(j>=0&&a[j]>key){a[j+1]=a[j]; j--; } a[j+1]=key; } }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); ins(a); System.out.println(Arrays.toString(a)); }
 }`,
-    py: `def insertion_sort(a):
-    for i in range(1, len(a)):
-        key = a[i]
-        j = i - 1
-        while j >= 0 and a[j] > key:
-            a[j+1] = a[j]
-            j -= 1
-        a[j+1] = key
+    py: `def insertion(a):
+    for i in range(1,len(a)):
+        key=a[i]; j=i-1
+        while j>=0 and a[j]>key:
+            a[j+1]=a[j]; j-=1
+        a[j+1]=key
+n=int(input()); a=list(map(int,input().split()))
+insertion(a); print(*a)`
+  },
+  gnome: {
+    cpp: `#include <iostream>
+using namespace std;
+int main(){int n,a[1000],i=1;cin>>n;for(int k=0;k<n;k++)cin>>a[k];
+while(i<n){ if(i==0||a[i]>=a[i-1]) i++; else {int t=a[i];a[i]=a[i-1];a[i-1]=t; i--;}}
+for(int k=0;k<n;k++)cout<<a[k]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void gnome(int[] a){ int i=1; while(i<a.length){ if(i==0||a[i]>=a[i-1]) i++; else {int t=a[i];a[i]=a[i-1];a[i-1]=t; i--; } } }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); gnome(a); System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def gnome(a):
+    i=1
+    while i<len(a):
+        if i==0 or a[i]>=a[i-1]: i+=1
+        else: a[i],a[i-1]=a[i-1],a[i]; i-=1
+n=int(input()); a=list(map(int,input().split()))
+gnome(a); print(*a)`
+  },
+  cocktail: {
+    cpp: `#include <iostream>
+using namespace std;
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i];
+bool sw=true;int s=0,e=n-1;while(sw){sw=false;for(int i=s;i<e;i++)if(a[i]>a[i+1]){int t=a[i];a[i]=a[i+1];a[i+1]=t;sw=true;} e--; if(!sw)break; sw=false; for(int i=e;i>s;i--)if(a[i]<a[i-1]){int t=a[i];a[i]=a[i-1];a[i-1]=t;sw=true;} s++; }
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void cocktail(int[] a){ boolean sw=true; int s=0,e=a.length-1; while(sw){ sw=false; for(int i=s;i<e;i++) if(a[i]>a[i+1]){int t=a[i];a[i]=a[i+1];a[i+1]=t; sw=true;} e--; if(!sw) break; sw=false; for(int i=e;i>s;i--) if(a[i]<a[i-1]){int t=a[i];a[i]=a[i-1];a[i-1]=t; sw=true;} s++; } }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); cocktail(a); System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def cocktail(a):
+    sw=True; s=0; e=len(a)-1
+    while sw:
+        sw=False
+        for i in range(s,e):
+            if a[i]>a[i+1]: a[i],a[i+1]=a[i+1],a[i]; sw=True
+        e-=1
+        if not sw: break
+        sw=False
+        for i in range(e,s,-1):
+            if a[i]<a[i-1]: a[i],a[i-1]=a[i-1],a[i]; sw=True
+        s+=1
+n=int(input()); a=list(map(int,input().split()))
+cocktail(a); print(*a)`
+  },
+  oddeven: {
+    cpp: `#include <iostream>
+using namespace std;
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i];
+bool sorted=false;while(!sorted){sorted=true;for(int i=1;i<=n-2;i+=2) if(a[i]>a[i+1]){int t=a[i];a[i]=a[i+1];a[i+1]=t;sorted=false;} for(int i=0;i<=n-2;i+=2) if(a[i]>a[i+1]){int t=a[i];a[i]=a[i+1];a[i+1]=t;sorted=false;}}
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void oddEven(int[] a){ boolean sorted=false; while(!sorted){ sorted=true; for(int i=1;i<=a.length-2;i+=2) if(a[i]>a[i+1]){int t=a[i];a[i]=a[i+1];a[i+1]=t; sorted=false;} for(int i=0;i<=a.length-2;i+=2) if(a[i]>a[i+1]){int t=a[i];a[i]=a[i+1];a[i+1]=t; sorted=false;} } }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); oddEven(a); System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def odd_even(a):
+    sorted=False
+    while not sorted:
+        sorted=True
+        for i in range(1,len(a)-1,2):
+            if a[i]>a[i+1]: a[i],a[i+1]=a[i+1],a[i]; sorted=False
+        for i in range(0,len(a)-1,2):
+            if a[i]>a[i+1]: a[i],a[i+1]=a[i+1],a[i]; sorted=False
+n=int(input()); a=list(map(int,input().split()))
+odd_even(a); print(*a)`
+  },
 
-a=[5,3,8,4,2]
-insertion_sort(a)
-print(a)`
+  /* ───────── II. Eficiente ───────── */
+  shell: {
+    cpp: `#include <iostream>
+using namespace std;
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i];
+int gap=1; while(gap<n/3) gap=3*gap+1; // Knuth
+while(gap>=1){ for(int i=gap;i<n;i++){ int t=a[i],j=i; while(j>=gap&&a[j-gap]>t){a[j]=a[j-gap]; j-=gap;} a[j]=t; } gap/=3; }
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void shell(int[] a){ int n=a.length, gap=1; while(gap<n/3) gap=3*gap+1; while(gap>=1){ for(int i=gap;i<n;i++){ int t=a[i], j=i; while(j>=gap && a[j-gap]>t){ a[j]=a[j-gap]; j-=gap; } a[j]=t; } gap/=3; } }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); shell(a); System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def shell(a):
+    n=len(a); gap=1
+    while gap<n//3: gap=3*gap+1
+    while gap>=1:
+        for i in range(gap,n):
+            t=a[i]; j=i
+            while j>=gap and a[j-gap]>t:
+                a[j]=a[j-gap]; j-=gap
+            a[j]=t
+        gap//=3
+n=int(input()); a=list(map(int,input().split()))
+shell(a); print(*a)`
+  },
+  comb: {
+    cpp: `#include <iostream>
+using namespace std;
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i];
+int gap=n; bool sw=true; while(gap>1||sw){ gap=int(gap/1.3); if(gap<1)gap=1; sw=false; for(int i=0;i+gap<n;i++) if(a[i]>a[i+gap]){int t=a[i];a[i]=a[i+gap];a[i+gap]=t; sw=true;} }
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void comb(int[] a){ int gap=a.length; boolean sw=true; while(gap>1||sw){ gap=(int)(gap/1.3); if(gap<1) gap=1; sw=false; for(int i=0;i+gap<a.length;i++) if(a[i]>a[i+gap]){int t=a[i];a[i]=a[i+gap];a[i+gap]=t; sw=true;} } }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); comb(a); System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def comb(a):
+    gap=len(a); sw=True
+    while gap>1 or sw:
+        gap=int(gap/1.3)
+        if gap<1: gap=1
+        sw=False
+        for i in range(0,len(a)-gap):
+            if a[i]>a[i+gap]:
+                a[i],a[i+gap]=a[i+gap],a[i]; sw=True
+n=int(input()); a=list(map(int,input().split()))
+comb(a); print(*a)`
   },
   merge: {
-    cpp: `#include <bits/stdc++.h>
+    cpp: `#include <iostream>
 using namespace std;
-void mergeVec(vector<int>& a,int l,int m,int r){
-  vector<int>L(a.begin()+l,a.begin()+m+1), R(a.begin()+m+1,a.begin()+r+1);
-  int i=0,j=0,k=l;
-  while(i<(int)L.size() && j<(int)R.size()) a[k++]= (L[i]<=R[j]? L[i++]:R[j++]);
-  while(i<(int)L.size()) a[k++]=L[i++];
-  while(j<(int)R.size()) a[k++]=R[j++];
-}
-void mergeSort(vector<int>& a,int l,int r){
-  if(l>=r) return;
-  int m=(l+r)/2; mergeSort(a,l,m); mergeSort(a,m+1,r); mergeVec(a,l,m,r);
-}
-int main(){ vector<int>a={5,3,8,4,2}; mergeSort(a,0,(int)a.size()-1); for(int x:a) cout<<x<<" "; }`,
-    java: `import java.util.*;
-public class Main{
-  static void merge(int[] a,int l,int m,int r){
-    int n1=m-l+1, n2=r-m;
-    int[] L=new int[n1], R=new int[n2];
-    for(int i=0;i<n1;i++) L[i]=a[l+i];
-    for(int j=0;j<n2;j++) R[j]=a[m+1+j];
-    int i=0,j=0,k=l;
-    while(i<n1 && j<n2) a[k++]=(L[i]<=R[j]?L[i++]:R[j++]);
-    while(i<n1) a[k++]=L[i++];
-    while(j<n2) a[k++]=R[j++];
-  }
-  static void mergeSort(int[] a,int l,int r){
-    if(l>=r) return;
-    int m=(l+r)/2; mergeSort(a,l,m); mergeSort(a,m+1,r); merge(a,l,m,r);
-  }
-  public static void main(String[] args){
-    int[] a={5,3,8,4,2}; mergeSort(a,0,a.length-1); System.out.println(Arrays.toString(a));
-  }
+void mergeArr(int a[],int l,int m,int r){int L[1000],R[1000];int n1=m-l+1,n2=r-m;for(int i=0;i<n1;i++)L[i]=a[l+i];for(int j=0;j<n2;j++)R[j]=a[m+1+j];int i=0,j=0,k=l;while(i<n1&&j<n2)a[k++]=(L[i]<=R[j]?L[i++]:R[j++]);while(i<n1)a[k++]=L[i++];while(j<n2)a[k++]=R[j++];}
+void msort(int a[],int l,int r){if(l>=r)return;int m=(l+r)/2; msort(a,l,m); msort(a,m+1,r); mergeArr(a,l,m,r);}
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i]; msort(a,0,n-1); for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void merge(int[] a,int l,int m,int r){int n1=m-l+1,n2=r-m;int[] L=new int[n1],R=new int[n2];for(int i=0;i<n1;i++)L[i]=a[l+i];for(int j=0;j<n2;j++)R[j]=a[m+1+j];int i=0,j=0,k=l;while(i<n1&&j<n2)a[k++]=(L[i]<=R[j]?L[i++]:R[j++]);while(i<n1)a[k++]=L[i++];while(j<n2)a[k++]=R[j++];}
+  static void sort(int[] a,int l,int r){ if(l>=r)return; int m=(l+r)/2; sort(a,l,m); sort(a,m+1,r); merge(a,l,m,r); }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); sort(a,0,n-1); System.out.println(Arrays.toString(a)); }
 }`,
     py: `def merge_sort(a):
-    def rec(l, r):
-        if l >= r: return
-        m = (l + r) // 2
-        rec(l, m); rec(m+1, r)
-        i, j = l, m+1
-        tmp = []
+    def rec(l,r):
+        if l>=r: return
+        m=(l+r)//2; rec(l,m); rec(m+1,r)
+        i,j=l,m+1; tmp=[]
         while i<=m and j<=r:
-            if a[i] <= a[j]:
-                tmp.append(a[i]); i+=1
-            else:
-                tmp.append(a[j]); j+=1
-        tmp.extend(a[i:m+1]); tmp.extend(a[j:r+1])
-        a[l:r+1] = tmp
-    rec(0, len(a)-1)
-
-a=[5,3,8,4,2]
-merge_sort(a)
-print(a)`
+            if a[i]<=a[j]: tmp.append(a[i]); i+=1
+            else: tmp.append(a[j]); j+=1
+        tmp+=a[i:m+1]+a[j:r+1]; a[l:r+1]=tmp
+    rec(0,len(a)-1)
+n=int(input()); a=list(map(int,input().split()))
+merge_sort(a); print(*a)`
   },
   quick: {
-    cpp: `#include <bits/stdc++.h>
+    cpp: `#include <iostream>
 using namespace std;
-int part(vector<int>& a,int l,int r){
-  int p=a[r], i=l-1;
-  for(int j=l;j<r;j++) if(a[j]<=p) { i++; swap(a[i],a[j]); }
-  swap(a[i+1],a[r]); return i+1;
-}
-void quickSort(vector<int>& a,int l,int r){
-  if(l<r){ int q=part(a,l,r); quickSort(a,l,q-1); quickSort(a,q+1,r); }
-}
-int main(){ vector<int>a={5,3,8,4,2}; quickSort(a,0,(int)a.size()-1); for(int x:a) cout<<x<<" "; }`,
-    java: `import java.util.*;
-public class Main{
-  static int part(int[] a,int l,int r){
-    int p=a[r], i=l-1;
-    for(int j=l;j<r;j++) if(a[j]<=p){ i++; int t=a[i]; a[i]=a[j]; a[j]=t; }
-    int t=a[i+1]; a[i+1]=a[r]; a[r]=t; return i+1;
-  }
-  static void quickSort(int[] a,int l,int r){
-    if(l<r){ int q=part(a,l,r); quickSort(a,l,q-1); quickSort(a,q+1,r); }
-  }
-  public static void main(String[] args){
-    int[] a={5,3,8,4,2}; quickSort(a,0,a.length-1); System.out.println(Arrays.toString(a));
-  }
+int part(int a[],int l,int r){int p=a[r], i=l-1;for(int j=l;j<r;j++) if(a[j]<=p){i++; int t=a[i];a[i]=a[j];a[j]=t;} int t=a[i+1];a[i+1]=a[r];a[r]=t; return i+1;}
+void qsort(int a[],int l,int r){ if(l<r){int q=part(a,l,r); qsort(a,l,q-1); qsort(a,q+1,r);} }
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i]; qsort(a,0,n-1); for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static int part(int[] a,int l,int r){int p=a[r],i=l-1;for(int j=l;j<r;j++) if(a[j]<=p){i++;int t=a[i];a[i]=a[j];a[j]=t;} int t=a[i+1];a[i+1]=a[r];a[r]=t; return i+1;}
+  static void qs(int[] a,int l,int r){ if(l<r){ int q=part(a,l,r); qs(a,l,q-1); qs(a,q+1,r);} }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); qs(a,0,n-1); System.out.println(Arrays.toString(a)); }
 }`,
-    py: `def partition(a, l, r):
-    p = a[r]; i = l - 1
-    for j in range(l, r):
-        if a[j] <= p:
-            i += 1; a[i], a[j] = a[j], a[i]
-    a[i+1], a[r] = a[r], a[i+1]
-    return i + 1
-
-def quick_sort(a, l=0, r=None):
-    if r is None: r = len(a) - 1
-    if l < r:
-        q = partition(a, l, r)
-        quick_sort(a, l, q-1)
-        quick_sort(a, q+1, r)
-
-a=[5,3,8,4,2]
-quick_sort(a)
-print(a)`
+    py: `def partition(a,l,r):
+    p=a[r]; i=l-1
+    for j in range(l,r):
+        if a[j]<=p:
+            i+=1; a[i],a[j]=a[j],a[i]
+    a[i+1],a[r]=a[r],a[i+1]
+    return i+1
+def quick(a,l=0,r=None):
+    if r is None: r=len(a)-1
+    if l<r:
+        q=partition(a,l,r)
+        quick(a,l,q-1); quick(a,q+1,r)
+n=int(input()); a=list(map(int,input().split()))
+quick(a); print(*a)`
   },
   heap: {
-    cpp: `#include <bits/stdc++.h>
+    cpp: `#include <iostream>
 using namespace std;
-void heapify(vector<int>& a,int n,int i){
-  int mx=i, l=2*i+1, r=2*i+2;
-  if(l<n && a[l]>a[mx]) mx=l;
-  if(r<n && a[r]>a[mx]) mx=r;
-  if(mx!=i){ swap(a[i],a[mx]); heapify(a,n,mx); }
-}
-void heapSort(vector<int>& a){
-  int n=a.size();
-  for(int i=n/2-1;i>=0;i--) heapify(a,n,i);
-  for(int i=n-1;i>0;i--){ swap(a[0],a[i]); heapify(a,i,0); }
-}
-int main(){ vector<int>a={5,3,8,4,2}; heapSort(a); for(int x:a) cout<<x<<" "; }`,
-    java: `import java.util.*;
-public class Main{
-  static void heapify(int[] a,int n,int i){
-    int mx=i, l=2*i+1, r=2*i+2;
-    if(l<n && a[l]>a[mx]) mx=l;
-    if(r<n && a[r]>a[mx]) mx=r;
-    if(mx!=i){ int t=a[i]; a[i]=a[mx]; a[mx]=t; heapify(a,n,mx); }
-  }
-  static void heapSort(int[] a){
-    int n=a.length;
-    for(int i=n/2-1;i>=0;i--) heapify(a,n,i);
-    for(int i=n-1;i>0;i--){ int t=a[0]; a[0]=a[i]; a[i]=t; heapify(a,i,0); }
-  }
-  public static void main(String[] args){
-    int[] a={5,3,8,4,2}; heapSort(a); System.out.println(Arrays.toString(a));
-  }
+void heapify(int a[],int n,int i){int mx=i,l=2*i+1,r=2*i+2; if(l<n&&a[l]>a[mx])mx=l; if(r<n&&a[r]>a[mx])mx=r; if(mx!=i){int t=a[i];a[i]=a[mx];a[mx]=t; heapify(a,n,mx);} }
+void heapsort(int a[],int n){ for(int i=n/2-1;i>=0;i--) heapify(a,n,i); for(int i=n-1;i>0;i--){int t=a[0];a[0]=a[i];a[i]=t; heapify(a,i,0);} }
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i]; heapsort(a,n); for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void heapify(int[] a,int n,int i){int mx=i,l=2*i+1,r=2*i+2; if(l<n&&a[l]>a[mx])mx=l; if(r<n&&a[r]>a[mx])mx=r; if(mx!=i){int t=a[i];a[i]=a[mx];a[mx]=t; heapify(a,n,mx);} }
+  static void heap(int[] a){ int n=a.length; for(int i=n/2-1;i>=0;i--) heapify(a,n,i); for(int i=n-1;i>0;i--){int t=a[0];a[0]=a[i];a[i]=t; heapify(a,i,0);} }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); heap(a); System.out.println(Arrays.toString(a)); }
 }`,
-    py: `def heapify(a, n, i):
-    mx = i
-    l, r = 2*i + 1, 2*i + 2
-    if l < n and a[l] > a[mx]: mx = l
-    if r < n and a[r] > a[mx]: mx = r
-    if mx != i:
-        a[i], a[mx] = a[mx], a[i]
-        heapify(a, n, mx)
+    py: `def heapify(a,n,i):
+    mx=i; l=2*i+1; r=2*i+2
+    if l<n and a[l]>a[mx]: mx=l
+    if r<n and a[r]>a[mx]: mx=r
+    if mx!=i:
+        a[i],a[mx]=a[mx],a[i]
+        heapify(a,n,mx)
+def heap(a):
+    n=len(a)
+    for i in range(n//2-1,-1,-1): heapify(a,n,i)
+    for i in range(n-1,0,-1):
+        a[0],a[i]=a[i],a[0]; heapify(a,i,0)
+n=int(input()); a=list(map(int,input().split()))
+heap(a); print(*a)`
+  },
 
-def heap_sort(a):
-    n = len(a)
-    for i in range(n//2 - 1, -1, -1): heapify(a, n, i)
-    for i in range(n-1, 0, -1):
-        a[0], a[i] = a[i], a[0]
-        heapify(a, i, 0)
+  /* ───────── III. Liniare ───────── */
+  counting: {
+    cpp: `#include <iostream>
+using namespace std;
+int c[1000001];
+int main(){int n,a[1000],mx=0;cin>>n;for(int i=0;i<n;i++){cin>>a[i]; if(a[i]>mx)mx=a[i]; c[a[i]]++; }
+int k=0; for(int v=0;v<=mx;v++) while(c[v]--) a[k++]=v;
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void counting(int[] a){ int mx=0; for(int x:a) if(x>mx) mx=x; int[] c=new int[mx+1]; for(int x:a) c[x]++; int k=0; for(int v=0;v<=mx;v++) while(c[v]-- > 0) a[k++]=v; }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); counting(a); System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def counting(a):
+    mx=max(a) if a else 0
+    c=[0]*(mx+1)
+    for x in a: c[x]+=1
+    k=0
+    for v in range(mx+1):
+        while c[v]>0:
+            a[k]=v; k+=1; c[v]-=1
+n=int(input()); a=list(map(int,input().split()))
+counting(a); print(*a)`
+  },
+  radix: {
+    cpp: `#include <iostream>
+using namespace std;
+void countingDigit(int a[],int n,int exp){int c[10]={0},out[1000];for(int i=0;i<n;i++) c[(a[i]/exp)%10]++; for(int i=1;i<10;i++) c[i]+=c[i-1]; for(int i=n-1;i>=0;i--){int d=(a[i]/exp)%10; out[--c[d]]=a[i];} for(int i=0;i<n;i++) a[i]=out[i];}
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i]; int mx=0;for(int i=0;i<n;i++) if(a[i]>mx) mx=a[i]; for(int exp=1; mx/exp>0; exp*=10) countingDigit(a,n,exp); for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void countDigit(int[] a,int exp){ int[] c=new int[10], out=new int[a.length]; for(int x:a) c[(x/exp)%10]++; for(int i=1;i<10;i++) c[i]+=c[i-1]; for(int i=a.length-1;i>=0;i--){ int d=(a[i]/exp)%10; out[--c[d]]=a[i]; } System.arraycopy(out,0,a,0,a.length); }
+  static void radix(int[] a){ int mx=0; for(int x:a) if(x>mx) mx=x; for(int exp=1; mx/exp>0; exp*=10) countDigit(a,exp); }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); radix(a); System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def count_digit(a,exp):
+    c=[0]*10; out=[0]*len(a)
+    for x in a: c[(x//exp)%10]+=1
+    for i in range(1,10): c[i]+=c[i-1]
+    for i in range(len(a)-1,-1,-1):
+        d=(a[i]//exp)%10; c[d]-=1; out[c[d]]=a[i]
+    a[:]=out
+def radix(a):
+    mx=max(a) if a else 0; exp=1
+    while mx//exp>0:
+        count_digit(a,exp); exp*=10
+n=int(input()); a=list(map(int,input().split()))
+radix(a); print(*a)`
+  },
+  bucket: {
+    cpp: `#include <iostream>
+using namespace std;
+// Variantă simplă pt. numere întregi mici: mapare în "buckets" egale și insertion în fiecare.
+void insertion(int b[],int m){ for(int i=1;i<m;i++){int k=b[i],j=i-1;while(j>=0&&b[j]>k){b[j+1]=b[j];j--;} b[j+1]=k;} }
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i];
+int mx=0;for(int i=0;i<n;i++) if(a[i]>mx) mx=a[i];
+const int B=10; int buck[B][1000], sz[B]={0};
+for(int i=0;i<n;i++){int idx=(mx==0)?0:(a[i]*B)/(mx+1); buck[idx][sz[idx]++]=a[i];}
+int k=0; for(int b=0;b<B;b++){ insertion(buck[b],sz[b]); for(int i=0;i<sz[b];i++) a[k++]=buck[b][i]; }
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void insertion(int[] b,int m){ for(int i=1;i<m;i++){int k=b[i],j=i-1;while(j>=0&&b[j]>k){b[j+1]=b[j];j--;} b[j+1]=k;} }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt();
+    int mx=0; for(int x:a) if(x>mx) mx=x; int B=10; int[][] buck=new int[B][n]; int[] sz=new int[B];
+    for(int x:a){ int idx=(mx==0)?0:(x*B)/(mx+1); buck[idx][sz[idx]++]=x; }
+    int k=0; for(int b=0;b<B;b++){ insertion(buck[b],sz[b]); for(int i=0;i<sz[b];i++) a[k++]=buck[b][i]; }
+    System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def bucket(a):
+    B=10; mx=max(a) if a else 0
+    buckets=[[] for _ in range(B)]
+    for x in a:
+        idx=0 if mx==0 else (x*B)//(mx+1)
+        buckets[idx].append(x)
+    def insertion(b):
+        for i in range(1,len(b)):
+            k=b[i]; j=i-1
+            while j>=0 and b[j]>k:
+                b[j+1]=b[j]; j-=1
+            b[j+1]=k
+    k=0
+    for b in buckets:
+        insertion(b)
+        for x in b:
+            a[k]=x; k+=1
+n=int(input()); a=list(map(int,input().split()))
+bucket(a); print(*a)`
+  },
+  pigeonhole: {
+    cpp: `#include <iostream>
+using namespace std;
+int holes[2000001];
+int main(){int n,a[1000],mn=1e9,mx=-1e9;cin>>n;for(int i=0;i<n;i++){cin>>a[i]; if(a[i]<mn)mn=a[i]; if(a[i]>mx)mx=a[i]; }
+int size=mx-mn+1; for(int i=0;i<n;i++) holes[a[i]-mn]++; int k=0; for(int i=0;i<size;i++) while(holes[i]--) a[k++]=i+mn;
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt();
+    int mn=Integer.MAX_VALUE,mx=Integer.MIN_VALUE; for(int x:a){ if(x<mn)mn=x; if(x>mx)mx=x; } int size=mx-mn+1; int[] holes=new int[size];
+    for(int x:a) holes[x-mn]++; int k=0; for(int i=0;i<size;i++) while(holes[i]-- > 0) a[k++]=i+mn;
+    System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def pigeonhole(a):
+    mn=min(a); mx=max(a); size=mx-mn+1
+    holes=[0]*size
+    for x in a: holes[x-mn]+=1
+    k=0
+    for i in range(size):
+        while holes[i]>0:
+            a[k]=i+mn; k+=1; holes[i]-=1
+n=int(input()); a=list(map(int,input().split()))
+pigeonhole(a); print(*a)`
+  },
 
-a=[5,3,8,4,2]
-heap_sort(a)
-print(a)`
-  }
+  /* ───────── IV. Speciale ───────── */
+  stooge: {
+    cpp: `#include <iostream>
+using namespace std;
+void stooge(int a[],int l,int r){ if(l>=r) return; if(a[l]>a[r]){int t=a[l];a[l]=a[r];a[r]=t;} if(r-l+1>2){ int t=(r-l+1)/3; stooge(a,l,r-t); stooge(a,l+t,r); stooge(a,l,r-t);} }
+int main(){int n,a[1000];cin>>n; for(int i=0;i<n;i++)cin>>a[i]; stooge(a,0,n-1); for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void stooge(int[] a,int l,int r){ if(l>=r) return; if(a[l]>a[r]){int t=a[l];a[l]=a[r];a[r]=t;} if(r-l+1>2){ int t=(r-l+1)/3; stooge(a,l,r-t); stooge(a,l+t,r); stooge(a,l,r-t);} }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); stooge(a,0,n-1); System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def stooge(a,l=0,r=None):
+    if r is None: r=len(a)-1
+    if l>=r: return
+    if a[l]>a[r]: a[l],a[r]=a[r],a[l]
+    if r-l+1>2:
+        t=(r-l+1)//3
+        stooge(a,l,r-t); stooge(a,l+t,r); stooge(a,l,r-t)
+n=int(input()); a=list(map(int,input().split()))
+stooge(a); print(*a)`
+  },
+  intro: { // introsort simplificat: quick + prag pe adâncime => heapsort
+    cpp: `#include <iostream>
+using namespace std;
+void heapify(int a[],int n,int i){int mx=i,l=2*i+1,r=2*i+2; if(l<n&&a[l]>a[mx])mx=l; if(r<n&&a[r]>a[mx])mx=r; if(mx!=i){int t=a[i];a[i]=a[mx];a[mx]=t; heapify(a,n,mx);} }
+void heapsort(int a[],int n){for(int i=n/2-1;i>=0;i--)heapify(a,n,i); for(int i=n-1;i>0;i--){int t=a[0];a[0]=a[i];a[i]=t; heapify(a,i,0);} }
+int part(int a[],int l,int r){int p=a[r],i=l-1;for(int j=l;j<r;j++) if(a[j]<=p){i++;int t=a[i];a[i]=a[j];a[j]=t;} int t=a[i+1];a[i+1]=a[r];a[r]=t; return i+1;}
+void intro(int a[],int l,int r,int depth){ if(l>=r) return; if(depth==0){ heapsort(a+l,r-l+1); return; } int q=part(a,l,r); intro(a,l,q-1,depth-1); intro(a,q+1,r,depth-1); }
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i]; int depth=0; for(int t=n;t>1;t/=2) depth++; depth*=2; intro(a,0,n-1,depth); for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void heapify(int[] a,int n,int i){int mx=i,l=2*i+1,r=2*i+2; if(l<n&&a[l]>a[mx])mx=l; if(r<n&&a[r]>a[mx])mx=r; if(mx!=i){int t=a[i];a[i]=a[mx];a[mx]=t; heapify(a,n,mx);} }
+  static void heap(int[] a){int n=a.length; for(int i=n/2-1;i>=0;i--)heapify(a,n,i); for(int i=n-1;i>0;i--){int t=a[0];a[0]=a[i];a[i]=t; heapify(a,i,0);} }
+  static int part(int[] a,int l,int r){int p=a[r],i=l-1;for(int j=l;j<r;j++) if(a[j]<=p){i++;int t=a[i];a[i]=a[j];a[j]=t;} int t=a[i+1];a[i+1]=a[r];a[r]=t; return i+1;}
+  static void intro(int[] a,int l,int r,int d){ if(l>=r) return; if(d==0){ int[] seg=Arrays.copyOfRange(a,l,r+1); heap(seg); for(int i=l;i<=r;i++) a[i]=seg[i-l]; return; } int q=part(a,l,r); intro(a,l,q-1,d-1); intro(a,q+1,r,d-1); }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); int d=0; for(int t=n;t>1;t/=2) d++; d*=2; intro(a,0,n-1,d); System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def heapify(a,n,i):
+    mx=i; l=2*i+1; r=2*i+2
+    if l<n and a[l]>a[mx]: mx=l
+    if r<n and a[r]>a[mx]: mx=r
+    if mx!=i: a[i],a[mx]=a[mx],a[i]; heapify(a,n,mx)
+def heap(a):
+    n=len(a)
+    for i in range(n//2-1,-1,-1): heapify(a,n,i)
+    for i in range(n-1,0,-1):
+        a[0],a[i]=a[i],a[0]; heapify(a,i,0)
+def part(a,l,r):
+    p=a[r]; i=l-1
+    for j in range(l,r):
+        if a[j]<=p: i+=1; a[i],a[j]=a[j],a[i]
+    a[i+1],a[r]=a[r],a[i+1]; return i+1
+def intro(a,l=0,r=None,depth=None):
+    if r is None: r=len(a)-1
+    if depth is None:
+        depth=0; t=len(a)
+        while t>1: t//=2; depth+=1
+        depth*=2
+    if l>=r: return
+    if depth==0: seg=a[l:r+1]; heap(seg); a[l:r+1]=seg; return
+    q=part(a,l,r); intro(a,l,q-1,depth-1); intro(a,q+1,r,depth-1)
+n=int(input()); a=list(map(int,input().split()))
+intro(a); print(*a)`
+  },
+  tim: { // timsort (simplificat): run=32, insertion pe run + merge bottom-up
+    cpp: `#include <iostream>
+using namespace std;
+void ins(int a[],int l,int r){ for(int i=l+1;i<=r;i++){int k=a[i],j=i-1;while(j>=l&&a[j]>k){a[j+1]=a[j];j--;} a[j+1]=k;} }
+void mergeSeg(int a[],int l,int m,int r){int L[1000],R[1000];int n1=m-l+1,n2=r-m;for(int i=0;i<n1;i++)L[i]=a[l+i];for(int j=0;j<n2;j++)R[j]=a[m+1+j];int i=0,j=0,k=l;while(i<n1&&j<n2)a[k++]=(L[i]<=R[j]?L[i++]:R[j++]);while(i<n1)a[k++]=L[i++];while(j<n2)a[k++]=R[j++];}
+int main(){const int RUN=32; int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i];
+for(int i=0;i<n;i+=RUN){int r=i+RUN-1; if(r>=n) r=n-1; ins(a,i,r);}
+for(int size=RUN; size<n; size*=2) for(int l=0;l<n;l+=2*size){int m=min(l+size-1,n-1); int r=min(l+2*size-1,n-1); if(m<r) mergeSeg(a,l,m,r);}
+for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void ins(int[] a,int l,int r){ for(int i=l+1;i<=r;i++){int k=a[i],j=i-1;while(j>=l&&a[j]>k){a[j+1]=a[j];j--;} a[j+1]=k;} }
+  static void mergeSeg(int[] a,int l,int m,int r){int n1=m-l+1,n2=r-m;int[] L=new int[n1],R=new int[n2];for(int i=0;i<n1;i++)L[i]=a[l+i];for(int j=0;j<n2;j++)R[j]=a[m+1+j];int i=0,j=0,k=l;while(i<n1&&j<n2)a[k++]=(L[i]<=R[j]?L[i++]:R[j++]);while(i<n1)a[k++]=L[i++];while(j<n2)a[k++]=R[j++];}
+  public static void main(String[] s){ final int RUN=32; Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt();
+    for(int i=0;i<n;i+=RUN){int r=Math.min(i+RUN-1,n-1); ins(a,i,r);}
+    for(int size=RUN; size<n; size*=2) for(int l=0;l<n;l+=2*size){int m=Math.min(l+size-1,n-1), r=Math.min(l+2*size-1,n-1); if(m<r) mergeSeg(a,l,m,r);}
+    System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def insertion(a,l,r):
+    for i in range(l+1,r+1):
+        k=a[i]; j=i-1
+        while j>=l and a[j]>k:
+            a[j+1]=a[j]; j-=1
+        a[j+1]=k
+def merge_seg(a,l,m,r):
+    L=a[l:m+1]; R=a[m+1:r+1]
+    i=j=0; k=l
+    while i<len(L) and j<len(R):
+        if L[i]<=R[j]: a[k]=L[i]; i+=1
+        else: a[k]=R[j]; j+=1
+        k+=1
+    while i<len(L): a[k]=L[i]; i+=1; k+=1
+    while j<len(R): a[k]=R[j]; j+=1; k+=1
+def timsort_simple(a, RUN=32):
+    n=len(a)
+    for i in range(0,n,RUN):
+        insertion(a,i,min(i+RUN-1,n-1))
+    size=RUN
+    while size<n:
+        for l in range(0,n,2*size):
+            m=min(l+size-1,n-1); r=min(l+2*size-1,n-1)
+            if m<r: merge_seg(a,l,m,r)
+        size*=2
+n=int(input()); a=list(map(int,input().split()))
+timsort_simple(a); print(*a)`
+  },
+  flash: { // flash sort simplificat (distribuțional) + insertion final
+    cpp: `#include <iostream>
+using namespace std;
+void insertion(int a[],int n){ for(int i=1;i<n;i++){int k=a[i],j=i-1;while(j>=0&&a[j]>k){a[j+1]=a[j];j--;} a[j+1]=k;} }
+int main(){int n,a[1000];cin>>n;for(int i=0;i<n;i++)cin>>a[i]; if(n==0){return 0;}
+int mn=a[0],mx=a[0],mxi=0; for(int i=1;i<n;i++){ if(a[i]<mn) mn=a[i]; if(a[i]>mx){mx=a[i];mxi=i;} }
+if(mn==mx){ for(int i=0;i<n;i++) cout<<a[i]<<" "; return 0; }
+const int m= (n<50? n: int(0.43*n)); int L[1001]={0};
+for(int i=0;i<n;i++){ int k=(int)((long long)(m-1)*(a[i]-mn)/(mx-mn)); L[k]++; }
+for(int k=1;k<m;k++) L[k]+=L[k-1];
+int hold=a[mxi]; a[mxi]=a[0]; a[0]=hold;
+int moves=0; int j=0; int k= m-1; int t=0; double fk= (double)(m-1)/(mx-mn);
+while(moves<n-1){ while(j> L[k]-1){ j++; k=int(fk*(a[j]-mn)); } int ev=a[j];
+while(j!=L[k]){ k=int(fk*(ev-mn)); int pos=--L[k]; int tmp=a[pos]; a[pos]=ev; ev=tmp; moves++; }
+}
+insertion(a,n); for(int i=0;i<n;i++)cout<<a[i]<<" ";}`,
+    java: `import java.util.*; public class Main{
+  static void insertion(int[] a){ for(int i=1;i<a.length;i++){int k=a[i],j=i-1;while(j>=0&&a[j]>k){a[j+1]=a[j];j--;} a[j+1]=k;} }
+  public static void main(String[] s){ Scanner sc=new Scanner(System.in); int n=sc.nextInt(); int[] a=new int[n]; for(int i=0;i<n;i++) a[i]=sc.nextInt(); if(n==0){return;}
+    int mn=a[0],mx=a[0],mxi=0; for(int i=1;i<n;i++){ if(a[i]<mn) mn=a[i]; if(a[i]>mx){mx=a[i];mxi=i;} }
+    if(mn==mx){ System.out.println(Arrays.toString(a)); return; }
+    int m = (n<50? n: (int)(0.43*n)); int[] L=new int[m]; for(int x:a){ int k=(int)((long)(m-1)*(x-mn)/(mx-mn)); L[k]++; }
+    for(int k=1;k<m;k++) L[k]+=L[k-1];
+    int tmp=a[mxi]; a[mxi]=a[0]; a[0]=tmp;
+    int moves=0,j=0,k=m-1; double fk=(double)(m-1)/(mx-mn);
+    while(moves<n-1){ while(j> L[k]-1){ j++; k=(int)(fk*(a[j]-mn)); } int ev=a[j];
+      while(j!=L[k]){ k=(int)(fk*(ev-mn)); int pos=--L[k]; int t2=a[pos]; a[pos]=ev; ev=t2; moves++; } }
+    insertion(a); System.out.println(Arrays.toString(a)); }
+}`,
+    py: `def insertion(a):
+    for i in range(1,len(a)):
+        k=a[i]; j=i-1
+        while j>=0 and a[j]>k:
+            a[j+1]=a[j]; j-=1
+        a[j+1]=k
+def flash(a):
+    n=len(a)
+    if n==0: return
+    mn=min(a); mx=max(a)
+    if mn==mx: return
+    m = n if n<50 else int(0.43*n)
+    L=[0]*m
+    fk=(m-1)/(mx-mn)
+    for x in a:
+        k=int(fk*(x-mn)); L[k]+=1
+    for k in range(1,m): L[k]+=L[k-1]
+    j=0; k=m-1; moves=0
+    while moves<n-1:
+        while j> L[k]-1:
+            j+=1; k=int(fk*(a[j]-mn))
+        ev=a[j]
+        while j!=L[k]:
+            k=int(fk*(ev-mn)); L[k]-=1; pos=L[k]
+            a[pos], ev = ev, a[pos]
+            moves+=1
+    insertion(a)
+n=int(input()); a=list(map(int,input().split()))
+flash(a); print(*a)`
+  },
 };
 
+/* Limbaje disponibile pentru un algoritm */
 export const getLangsFor = (slug) => {
-  const entry = CODE[slug] || {};
-  const langs = [];
-  if (entry.cpp) langs.push({ key: "cpp", label: "C++" });
-  if (entry.java) langs.push({ key: "java", label: "Java" });
-  if (entry.py) langs.push({ key: "py", label: "Python" });
-  return langs;
+  const e = CODE[slug] || {};
+  const res = [];
+  if (e.cpp) res.push({ key: "cpp", label: "C++" });
+  if (e.java) res.push({ key: "java", label: "Java" });
+  if (e.py) res.push({ key: "py", label: "Python" });
+  return res;
 };
 
+/* Returnează codul pentru (slug, lang) */
 export const getCode = (slug, langKey) => {
-  const pack = CODE[slug];
-  if (!pack) return null;
-  if (langKey === "cpp") return pack.cpp;
-  if (langKey === "java") return pack.java;
-  return pack.py; // default py
+  const e = CODE[slug];
+  if (!e) return null;
+  if (langKey === "cpp") return e.cpp;
+  if (langKey === "java") return e.java;
+  return e.py;
 };

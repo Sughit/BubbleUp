@@ -23,10 +23,6 @@ export const LABELS = {
   intro: "Intro Sort",
   tim: "Tim Sort",
   flash: "Flash Sort",
-  bogo: "Bogo Sort",
-  sleep: "Sleep Sort (simulare)",
-  bitonic: "Bitonic Sort (în curând)",
-  "odd-even-merge": "Odd–Even Merge Sort (în curând)",
 };
 
 export const ALLOWED_SLUGS = Object.keys(LABELS);
@@ -401,51 +397,10 @@ function* stoogeSort(base) {
   for (const f of frames) yield f;
 }
 
-/* Bogo (limitat) */
-function* bogoSort(base) {
-  const arr = base.slice();
-  const frames = [];
-  const isSorted = (a) => a.every((v, i) => i === 0 || a[i - 1] <= v);
-  const maxSteps = 2000;
-  let steps = 0;
-  while (!isSorted(arr) && steps < maxSteps && arr.length <= 7) {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    frames.push({ arr: arr.slice(), hi: { a: -1, b: -1, range: [] } });
-    steps++;
-  }
-  frames.push({ arr: arr.slice(), hi: { a: -1, b: -1, range: [0, arr.length - 1] } });
-  for (const f of frames) yield f;
-}
-
-/* Sleep sort (simulat) */
-function* sleepSort(base) {
-  const arr = base.slice();
-  const frames = [];
-  const items = arr.map((v, i) => ({ v, i }));
-  items.sort((a, b) => a.v - b.v);
-  const out = [];
-  for (const it of items) {
-    out.push(it.v);
-    const temp = out.concat(arr.slice(out.length));
-    frames.push({ arr: temp.slice(), hi: { a: out.length - 1, b: -1, range: [0, out.length - 1] } });
-  }
-  const final = items.map((x) => x.v);
-  frames.push({ arr: final, hi: { a: -1, b: -1, range: [0, final.length - 1] } });
-  for (const f of frames) yield f;
-}
-
 /* Aliasuri pentru hibrizi */
 const introSort = (base) => quickSort(base);
 const timSort = (base) => mergeSort(base);
 const flashSort = (base) => bucketSort(base);
-
-/* Generator inert (pentru „în curând”) */
-function* inertShow(base) {
-  yield { arr: base.slice(), hi: { a: -1, b: -1, range: [] } };
-}
 
 /* Routerul de generatoare */
 export const getGenerator = (slug, data, setBanner) => {
@@ -471,12 +426,6 @@ export const getGenerator = (slug, data, setBanner) => {
     case "intro": return introSort(data);
     case "tim": return timSort(data);
     case "flash": return flashSort(data);
-    case "bogo": return bogoSort(data);
-    case "sleep": return sleepSort(data);
-    case "bitonic":
-    case "odd-even-merge":
-      if (setBanner) setBanner("Vizualizatorul pentru acest algoritm va fi adăugat în curând.");
-      return inertShow(data);
     default:
       return bubbleSort(data);
   }
