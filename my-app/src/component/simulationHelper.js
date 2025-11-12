@@ -23,6 +23,8 @@ export const LABELS = {
   intro: "Intro Sort",
   tim: "Tim Sort",
   flash: "Flash Sort",
+  bitonic: "Bitonic Sort",
+  oddevenmerge: "Odd–Even Merge Sort"
 };
 
 export const ALLOWED_SLUGS = Object.keys(LABELS);

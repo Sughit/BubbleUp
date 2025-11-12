@@ -364,6 +364,265 @@ pigeonhole(a); print(*a)`
   },
 
   /* ───────── IV. Speciale ───────── */
+  bitonic: {
+  cpp: `
+#include <bits/stdc++.h>
+using namespace std;
+
+// compare & swap pentru direcția 'up' (true: crescător)
+static inline void compSwap(vector<int>& a, int i, int j, bool up) {
+    if ((a[i] > a[j]) == up) swap(a[i], a[j]);
+}
+
+void bitonicMerge(vector<int>& a, int lo, int n, bool up) {
+    if (n <= 1) return;
+    int k = n / 2;
+    for (int i = lo; i < lo + k; ++i) compSwap(a, i, i + k, up);
+    bitonicMerge(a, lo, k, up);
+    bitonicMerge(a, lo + k, k, up);
+}
+
+void bitonicSortRec(vector<int>& a, int lo, int n, bool up) {
+    if (n <= 1) return;
+    int k = n / 2;
+    bitonicSortRec(a, lo, k, true);
+    bitonicSortRec(a, lo + k, k, false);
+    bitonicMerge(a, lo, n, up);
+}
+
+void bitonicSort(vector<int>& arr) {
+    if (arr.empty()) return;
+    // pad la următoarea putere a lui 2
+    int n = arr.size();
+    int p2 = 1; while (p2 < n) p2 <<= 1;
+    vector<int> a = arr;
+    int INF = numeric_limits<int>::max();
+    a.resize(p2, INF);
+
+    bitonicSortRec(a, 0, p2, true);
+
+    // scriem primele n rezultate (ignoram padding-ul)
+    for (int i = 0; i < n; ++i) arr[i] = a[i];
+}
+
+int main() {
+    vector<int> v = {10, 30, 11, 20, 4, 330, 21};
+    bitonicSort(v);
+    for (int x : v) cout << x << " ";
+    return 0;
+}
+`,
+
+  java: `
+import java.util.*;
+
+public class BitonicSort {
+    static void compSwap(int[] a, int i, int j, boolean up) {
+        if ((a[i] > a[j]) == up) {
+            int t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+    }
+    static void bitonicMerge(int[] a, int lo, int n, boolean up) {
+        if (n <= 1) return;
+        int k = n / 2;
+        for (int i = lo; i < lo + k; i++) compSwap(a, i, i + k, up);
+        bitonicMerge(a, lo, k, up);
+        bitonicMerge(a, lo + k, k, up);
+    }
+    static void bitonicSortRec(int[] a, int lo, int n, boolean up) {
+        if (n <= 1) return;
+        int k = n / 2;
+        bitonicSortRec(a, lo, k, true);
+        bitonicSortRec(a, lo + k, k, false);
+        bitonicMerge(a, lo, n, up);
+    }
+    public static void bitonicSort(int[] arr) {
+        if (arr.length == 0) return;
+        int n = arr.length, p2 = 1; while (p2 < n) p2 <<= 1;
+        int[] a = Arrays.copyOf(arr, p2);
+        Arrays.fill(a, n, p2, Integer.MAX_VALUE);
+        bitonicSortRec(a, 0, p2, true);
+        System.arraycopy(a, 0, arr, 0, n);
+    }
+    public static void main(String[] args) {
+        int[] v = {10, 30, 11, 20, 4, 330, 21};
+        bitonicSort(v);
+        System.out.println(Arrays.toString(v));
+    }
+}
+`,
+
+  py: `
+def _comp_swap(a, i, j, up):
+    if (a[i] > a[j]) == up:
+        a[i], a[j] = a[j], a[i]
+
+def _bitonic_merge(a, lo, n, up):
+    if n <= 1:
+        return
+    k = n // 2
+    for i in range(lo, lo + k):
+        _comp_swap(a, i, i + k, up)
+    _bitonic_merge(a, lo, k, up)
+    _bitonic_merge(a, lo + k, k, up)
+
+def _bitonic_sort_rec(a, lo, n, up):
+    if n <= 1:
+        return
+    k = n // 2
+    _bitonic_sort_rec(a, lo, k, True)
+    _bitonic_sort_rec(a, lo + k, k, False)
+    _bitonic_merge(a, lo, n, up)
+
+def bitonic_sort(arr):
+    if not arr:
+        return
+    n = len(arr)
+    p2 = 1
+    while p2 < n:
+        p2 <<= 1
+    a = arr[:] + [float('inf')] * (p2 - n)
+    _bitonic_sort_rec(a, 0, p2, True)
+    arr[:] = a[:n]
+
+# exemplu
+v = [10, 30, 11, 20, 4, 330, 21]
+bitonic_sort(v)
+print(v)
+`
+},
+oddevenmerge: {
+  cpp: `
+#include <bits/stdc++.h>
+using namespace std;
+
+static inline void compSwap(vector<int>& a, int i, int j, bool up) {
+    if ((a[i] > a[j]) == up) swap(a[i], a[j]);
+}
+
+void oddEvenMerge(vector<int>& a, int lo, int n, bool up) {
+    if (n <= 1) return;
+    if (n == 2) { compSwap(a, lo, lo + 1, up); return; }
+    int m = n / 2;
+    oddEvenMerge(a, lo, m, up);
+    oddEvenMerge(a, lo + m, m, up);
+    // faza de interclasare odd-even
+    for (int i = lo + 1; i + 1 < lo + n; i += 2)
+        compSwap(a, i, i + 1, up);
+}
+
+void oddEvenMergeSort(vector<int>& a, int lo, int n, bool up) {
+    if (n <= 1) return;
+    int m = n / 2;
+    oddEvenMergeSort(a, lo, m, up);
+    oddEvenMergeSort(a, lo + m, m, up);
+    oddEvenMerge(a, lo, n, up);
+}
+
+void oddEvenMergeSort(vector<int>& arr) {
+    if (arr.empty()) return;
+    int n = arr.size();
+    int p2 = 1; while (p2 < n) p2 <<= 1;
+    vector<int> a = arr;
+    a.resize(p2, numeric_limits<int>::max());
+    oddEvenMergeSort(a, 0, p2, true);
+    for (int i = 0; i < n; ++i) arr[i] = a[i];
+}
+
+int main() {
+    vector<int> v = {7, 3, 5, 2, 9, 1, 8};
+    oddEvenMergeSort(v);
+    for (int x : v) cout << x << " ";
+    return 0;
+}
+`,
+
+  java: `
+import java.util.*;
+
+public class OddEvenMergeSort {
+    static void compSwap(int[] a, int i, int j, boolean up) {
+        if ((a[i] > a[j]) == up) {
+            int t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+    }
+    static void oddEvenMerge(int[] a, int lo, int n, boolean up) {
+        if (n <= 1) return;
+        if (n == 2) { compSwap(a, lo, lo + 1, up); return; }
+        int m = n / 2;
+        oddEvenMerge(a, lo, m, up);
+        oddEvenMerge(a, lo + m, m, up);
+        for (int i = lo + 1; i + 1 < lo + n; i += 2)
+            compSwap(a, i, i + 1, up);
+    }
+    static void oddEvenMergeSortRec(int[] a, int lo, int n, boolean up) {
+        if (n <= 1) return;
+        int m = n / 2;
+        oddEvenMergeSortRec(a, lo, m, up);
+        oddEvenMergeSortRec(a, lo + m, m, up);
+        oddEvenMerge(a, lo, n, up);
+    }
+    public static void oddEvenMergeSort(int[] arr) {
+        if (arr.length == 0) return;
+        int n = arr.length, p2 = 1; while (p2 < n) p2 <<= 1;
+        int[] a = Arrays.copyOf(arr, p2);
+        Arrays.fill(a, n, p2, Integer.MAX_VALUE);
+        oddEvenMergeSortRec(a, 0, p2, true);
+        System.arraycopy(a, 0, arr, 0, n);
+    }
+    public static void main(String[] args) {
+        int[] v = {7, 3, 5, 2, 9, 1, 8};
+        oddEvenMergeSort(v);
+        System.out.println(Arrays.toString(v));
+    }
+}
+`,
+
+  py: `
+def _cs(a, i, j, up):
+    if (a[i] > a[j]) == up:
+        a[i], a[j] = a[j], a[i]
+
+def _odd_even_merge(a, lo, n, up):
+    if n <= 1:
+        return
+    if n == 2:
+        _cs(a, lo, lo + 1, up)
+        return
+    m = n // 2
+    _odd_even_merge(a, lo, m, up)
+    _odd_even_merge(a, lo + m, m, up)
+    i = lo + 1
+    while i + 1 < lo + n:
+        _cs(a, i, i + 1, up)
+        i += 2
+
+def _odd_even_merge_sort(a, lo, n, up):
+    if n <= 1:
+        return
+    m = n // 2
+    _odd_even_merge_sort(a, lo, m, up)
+    _odd_even_merge_sort(a, lo + m, m, up)
+    _odd_even_merge(a, lo, n, up)
+
+def odd_even_merge_sort(arr):
+    if not arr:
+        return
+    n = len(arr)
+    p2 = 1
+    while p2 < n:
+        p2 <<= 1
+    a = arr[:] + [float('inf')] * (p2 - n)
+    _odd_even_merge_sort(a, 0, p2, True)
+    arr[:] = a[:n]
+
+# exemplu
+v = [7, 3, 5, 2, 9, 1, 8]
+odd_even_merge_sort(v)
+print(v)
+`
+},
+
   stooge: {
     cpp: `#include <iostream>
 using namespace std;
@@ -541,11 +800,63 @@ export const getLangsFor = (slug) => {
   return res;
 };
 
-/* Returnează codul pentru (slug, lang) */
+// === PATCH: add this helper near the bottom of src/component/codeHelper.js ===
+
+/* Pretty-print compact one-liners for C/Java-like code */
+export function prettifyCStyle(code) {
+  if (!code) return code;
+  // quick heuristic: if already formatted (lots of newlines), return
+  const nlCount = (code.match(/\n/g) || []).length;
+  if (nlCount > 10) return code; // likely already pretty
+
+  // 1) structural newlines
+  let s = code
+    .replace(/[\t ]+/g, " ")
+    .replace(/\)\s*\{/g, ") {\n")
+    .replace(/;/g, ";\n")
+    .replace(/\{/g, "{\n")
+    .replace(/\}/g, "}\n")
+    .replace(/\n\s*\n+/g, "\n");
+
+  // 2) indentation
+  const lines = s.split(/\n/);
+  let depth = 0;
+  const out = [];
+  for (let raw of lines) {
+    let line = raw.trim();
+    if (!line) { out.push(""); continue; }
+
+    // dedent if line starts with '}'
+    if (/^\}/.test(line)) depth = Math.max(0, depth - 1);
+
+    // build padded line
+    out.push("  ".repeat(depth) + line);
+
+    // adjust depth after '{' tokens at end
+    if (/\{\s*$/.test(line)) depth++;
+  }
+
+  // 3) small cleanups
+  return out.join("\n")
+    .replace(/\n\s*\n\s*\n+/g, "\n\n")
+    .trim();
+}
+
+// === REPLACE your existing getCode with the version below ===
 export const getCode = (slug, langKey) => {
   const e = CODE[slug];
   if (!e) return null;
-  if (langKey === "cpp") return e.cpp;
-  if (langKey === "java") return e.java;
-  return e.py;
+  let src = null;
+  if (langKey === "cpp") src = e.cpp;
+  else if (langKey === "java") src = e.java;
+  else src = e.py;
+
+  // beautify compact C++/Java one-liners
+  if (langKey === "cpp" || langKey === "java") {
+    try { return prettifyCStyle(src); } catch { return src; }
+  }
+  return src;
 };
+
+// (getLangsFor rămâne neschimbat)
+

@@ -43,7 +43,7 @@ const ALGORITHMS = {
   /* IV. SPECIALE */
   special: [
     { name: "Bitonic Sort", slug: "bitonic", complexities:{best:<>O(n·log² n)</>,avg:<>O(n·log² n)</>,worst:<>O(n·log² n)</>}, stable:false, inPlace:false, notes:"Sorting network; excelent pe GPU." },
-    { name: "Odd-Even Merge Sort", slug: "odd-even-merge", complexities:{best:<>O(n·log² n)</>,avg:<>O(n·log² n)</>,worst:<>O(n·log² n)</>}, stable:false, inPlace:false, notes:"Rețea Batcher." },
+    { name: "Odd-Even Merge Sort", slug: "oddevenmerge", complexities:{best:<>O(n·log² n)</>,avg:<>O(n·log² n)</>,worst:<>O(n·log² n)</>}, stable:false, inPlace:false, notes:"Rețea Batcher." },
     { name: "Stooge Sort", slug: "stooge", complexities:{best:<>O(n<b><sup>2.7</sup></b>)</>,avg:<>O(n<b><sup>2.7</sup></b>)</>,worst:<>O(n<b><sup>2.7</sup></b>)</>}, stable:false, inPlace:true, notes:"Recursiv exotic." },
     { name: "Comb Sort", slug: "comb", complexities:{best:<>O(n·log n)</>,avg:<>≈O(n<b><sup>1.3</sup></b>–n<b><sup>2</sup></b>)</>,worst:<>O(n<b><sup>2</sup></b>)</>}, stable:false, inPlace:true, notes:"Gap shrink ~1.3." },
     { name: "Flash Sort", slug: "flash", complexities:{best:<>O(n)</>,avg:<>≈O(n)</>,worst:<>O(n<b><sup>2</sup></b>)</>}, stable:false, inPlace:true, notes:"Distribuțional; alias Bucket în vizualizare." },
