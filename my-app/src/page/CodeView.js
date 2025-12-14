@@ -25,7 +25,6 @@ export default function CodeView() {
   const label = LABELS[algo] || algo;
   const code = useMemo(() => getCode(algo, lang) || "// Fără cod disponibil.", [algo, lang]);
 
-  // feedback copy
   const [copied, setCopied] = useState(false);
   const onCopy = async () => {
     try {
@@ -35,7 +34,6 @@ export default function CodeView() {
     } catch {}
   };
 
-  // keep selected language valid when route changes
   useEffect(() => {
     if (!langs.find(l => l.key === lang)) setLang(langs[0]?.key || "cpp");
   }, [algo]);
@@ -43,7 +41,6 @@ export default function CodeView() {
   return (
     <div className="min-h-screen w-full bg-slate-950 text-zinc-100">
       <div className="mx-auto max-w-6xl px-4 py-6 space-y-4">
-        {/* Header */}
         <div className="flex items-center gap-2">
           <button onClick={() => navigate(-1)} className="rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2 text-sm hover:bg-slate-800">← Înapoi</button>
           <h1 className="text-2xl font-bold">{label} — Cod</h1>
@@ -64,14 +61,14 @@ export default function CodeView() {
 
           <div className="ml-auto flex items-center gap-2">
             <button onClick={onCopy} className="rounded-lg bg-slate-800 px-3 py-1.5 text-sm hover:bg-slate-700">
-              {copied ? "✓ Copiat" : "Copy"}
+              {copied ? "Copiat" : "Copiază"}
             </button>
             <a
               download={`${algo}-${lang}.txt`}
               href={`data:text/plain;charset=utf-8,${encodeURIComponent(code)}`}
               className="rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-1.5 text-sm hover:bg-slate-800"
             >
-              ⤓ Download
+              Descarcă
             </a>
           </div>
         </div>
@@ -100,7 +97,6 @@ export default function CodeView() {
           </SyntaxHighlighter>
         </div>
 
-        {/* Small note */}
         <p className="text-xs text-zinc-400">Hint: poți selecta limbajul, copia sau descărca direct codul.</p>
       </div>
     </div>
