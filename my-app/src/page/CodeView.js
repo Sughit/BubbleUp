@@ -44,7 +44,7 @@ export default function CodeView() {
         <div className="flex items-center gap-2">
           <button onClick={() => navigate(-1)} className="rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2 text-sm hover:bg-slate-800">← Înapoi</button>
           <h1 className="text-2xl font-bold">{label} — Cod</h1>
-          <Link to={`/simulate/${algo}`} className="ml-auto rounded-lg bg-indigo-600 px-3 py-2 text-sm text-white hover:opacity-90">▶️ Simulează</Link>
+          <Link to={`/simulate/${algo}`} className="ml-auto rounded-lg bg-indigo-600 px-3 py-2 text-sm text-white hover:opacity-90">Simulează</Link>
         </div>
 
         {/* Toolbar */}
