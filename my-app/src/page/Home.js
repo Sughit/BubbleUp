@@ -10,7 +10,7 @@ const CATEGORIES = [
   { id: "structures", label: "V. Sortări pentru structuri speciale" },
 ];
 
-/* ─────────────────────────  ALGORITMI (+ slug pt. simulare) ───────────────────────── */
+/* ─────────────────────────  ALGORITMI  ───────────────────────── */
 const ALGORITHMS = {
   /* I. SIMPLE */
   simple: [
@@ -74,13 +74,11 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full bg-slate-950 text-zinc-100">
       <div className="mx-auto max-w-6xl px-4 py-8">
-        {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-semibold tracking-tight">Sortări — Hub interactiv</h1>
           <p className="mt-1 text-sm text-zinc-400">Alege o categorie, apoi simulează algoritmul ales.</p>
         </div>
 
-        {/* Categorii */}
         <div className="sticky top-0 z-10 -mx-4 mb-6 bg-gradient-to-b from-slate-950/90 to-slate-950/60 px-4 py-4 backdrop-blur">
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map((c) => {
@@ -120,7 +118,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* Conținut: carduri sau tabel */}
         {!selected ? (
           <div className="grid place-items-center rounded-2xl border border-slate-800 bg-slate-900/40 p-10 text-center">
             <div className="max-w-xl">
@@ -185,21 +182,20 @@ export default function Home() {
                   className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm ring-1 ring-inset ring-indigo-400/30 hover:bg-indigo-500 transition"
                   title="Deschide simularea"
                 >
-                  🔍 Simulează
+                  Simulează
                 </button>
                 <button
                   onClick={() => navigate(`/code/${algo.slug}`)}
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm font-medium text-zinc-200 hover:bg-slate-800"
                   title="Vezi codul (C++ / Java / Python)"
                 >
-                  💻 Cod
+                  Cod
                 </button>
               </div>
             ))}
           </div>
         )}
 
-        {/* Legendă */}
         <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-900/50 p-4 text-sm text-zinc-400">
           <div className="mb-1 font-medium text-zinc-300">Legendă</div>
           <div className="flex flex-wrap gap-4">

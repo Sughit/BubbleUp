@@ -1,5 +1,3 @@
-// src/component/codeHelper.js
-// Coduri educaționale, concise. C++ folosește DOAR <iostream>.
 export const CODE = {
   /* ───────── I. Simple ───────── */
   bubble: {
@@ -369,7 +367,6 @@ pigeonhole(a); print(*a)`
 #include <bits/stdc++.h>
 using namespace std;
 
-// compare & swap pentru direcția 'up' (true: crescător)
 static inline void compSwap(vector<int>& a, int i, int j, bool up) {
     if ((a[i] > a[j]) == up) swap(a[i], a[j]);
 }
@@ -642,7 +639,7 @@ int main(){int n,a[1000];cin>>n; for(int i=0;i<n;i++)cin>>a[i]; stooge(a,0,n-1);
 n=int(input()); a=list(map(int,input().split()))
 stooge(a); print(*a)`
   },
-  intro: { // introsort simplificat: quick + prag pe adâncime => heapsort
+  intro: { 
     cpp: `#include <iostream>
 using namespace std;
 void heapify(int a[],int n,int i){int mx=i,l=2*i+1,r=2*i+2; if(l<n&&a[l]>a[mx])mx=l; if(r<n&&a[r]>a[mx])mx=r; if(mx!=i){int t=a[i];a[i]=a[mx];a[mx]=t; heapify(a,n,mx);} }
@@ -684,7 +681,7 @@ def intro(a,l=0,r=None,depth=None):
 n=int(input()); a=list(map(int,input().split()))
 intro(a); print(*a)`
   },
-  tim: { // timsort (simplificat): run=32, insertion pe run + merge bottom-up
+  tim: { 
     cpp: `#include <iostream>
 using namespace std;
 void ins(int a[],int l,int r){ for(int i=l+1;i<=r;i++){int k=a[i],j=i-1;while(j>=l&&a[j]>k){a[j+1]=a[j];j--;} a[j+1]=k;} }
@@ -729,7 +726,7 @@ def timsort_simple(a, RUN=32):
 n=int(input()); a=list(map(int,input().split()))
 timsort_simple(a); print(*a)`
   },
-  flash: { // flash sort simplificat (distribuțional) + insertion final
+  flash: { 
     cpp: `#include <iostream>
 using namespace std;
 void insertion(int a[],int n){ for(int i=1;i<n;i++){int k=a[i],j=i-1;while(j>=0&&a[j]>k){a[j+1]=a[j];j--;} a[j+1]=k;} }
@@ -790,7 +787,6 @@ flash(a); print(*a)`
   },
 };
 
-/* Limbaje disponibile pentru un algoritm */
 export const getLangsFor = (slug) => {
   const e = CODE[slug] || {};
   const res = [];
@@ -800,49 +796,52 @@ export const getLangsFor = (slug) => {
   return res;
 };
 
-// === PATCH: add this helper near the bottom of src/component/codeHelper.js ===
-
-/* Pretty-print compact one-liners for C/Java-like code */
-export function prettifyCStyle(code) {
+export function prettifyCStyle(code, { force = false } = {}) {
   if (!code) return code;
-  // quick heuristic: if already formatted (lots of newlines), return
-  const nlCount = (code.match(/\n/g) || []).length;
-  if (nlCount > 10) return code; // likely already pretty
 
-  // 1) structural newlines
+  const lines0 = code.split(/\r?\n/);
+  const nlCount = lines0.length - 1;
+  const maxLen = Math.max(0, ...lines0.map((l) => l.length));
+
+  if (!force && nlCount > 10 && maxLen < 140) return code;
+
   let s = code
-    .replace(/[\t ]+/g, " ")
+    .replace(/\r/g, "")
+    .replace(/[ \t]+/g, " ")
+    .replace(/[ \t]*\n[ \t]*/g, "\n");
+
+  const FOR_SEMI = "__FOR_SEMI__";
+  s = s.replace(/for\s*\(([^)]*)\)/g, (m, inside) => {
+    const safe = inside.replace(/;/g, FOR_SEMI);
+    return m.replace(inside, safe);
+  });
+
+  s = s
     .replace(/\)\s*\{/g, ") {\n")
     .replace(/;/g, ";\n")
     .replace(/\{/g, "{\n")
     .replace(/\}/g, "}\n")
     .replace(/\n\s*\n+/g, "\n");
 
-  // 2) indentation
-  const lines = s.split(/\n/);
+  s = s.replaceAll(FOR_SEMI, ";");
+
+  // indentare
+  const lines = s.split("\n");
   let depth = 0;
   const out = [];
-  for (let raw of lines) {
-    let line = raw.trim();
+
+  for (const raw of lines) {
+    const line = raw.trim();
     if (!line) { out.push(""); continue; }
 
-    // dedent if line starts with '}'
-    if (/^\}/.test(line)) depth = Math.max(0, depth - 1);
-
-    // build padded line
+    if (line.startsWith("}")) depth = Math.max(0, depth - 1);
     out.push("  ".repeat(depth) + line);
-
-    // adjust depth after '{' tokens at end
-    if (/\{\s*$/.test(line)) depth++;
+    if (line.endsWith("{")) depth++;
   }
 
-  // 3) small cleanups
-  return out.join("\n")
-    .replace(/\n\s*\n\s*\n+/g, "\n\n")
-    .trim();
+  return out.join("\n").replace(/\n\s*\n\s*\n+/g, "\n\n").trim();
 }
 
-// === REPLACE your existing getCode with the version below ===
 export const getCode = (slug, langKey) => {
   const e = CODE[slug];
   if (!e) return null;
@@ -851,12 +850,13 @@ export const getCode = (slug, langKey) => {
   else if (langKey === "java") src = e.java;
   else src = e.py;
 
-  // beautify compact C++/Java one-liners
-  if (langKey === "cpp" || langKey === "java") {
-    try { return prettifyCStyle(src); } catch { return src; }
+  if (langKey === "cpp") {
+    try { return prettifyCStyle(src, { force: true }); } catch { return src; }
+  }
+  if (langKey === "java") {
+    try { return prettifyCStyle(src, { force: false }); } catch { return src; }
   }
   return src;
 };
 
-// (getLangsFor rămâne neschimbat)
 

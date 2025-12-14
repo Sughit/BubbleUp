@@ -121,14 +121,12 @@ export default function Simulation() {
     } else {
       stopAll();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [algo]);
 
   /* ========= UI ========= */
   return (
     <div className="min-h-screen w-full bg-slate-950 text-zinc-100">
       <div className="mx-auto max-w-6xl px-4 py-6 md:py-8 space-y-4">
-        {/* Header */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div className="flex items-center gap-3">
             <button
@@ -157,7 +155,7 @@ export default function Simulation() {
               onClick={startRun}
               className="px-3 py-2 rounded-xl bg-emerald-600 text-white hover:opacity-90"
             >
-              ▶️ Start
+              Start
             </button>
             <button
               onClick={onPauseToggle}
@@ -166,25 +164,25 @@ export default function Simulation() {
                 running ? "bg-amber-600 hover:opacity-90" : "bg-gray-700 opacity-60"
               } text-white`}
             >
-              {paused ? "⏯️ Resume" : "⏸️ Pause"}
+              {paused ? "Continuă" : "Pauză"}
             </button>
             <button
               onClick={onStep}
               className="px-3 py-2 rounded-xl bg-sky-700 text-white hover:opacity-90"
             >
-              ⏭️ Step
+              Pasul Următor
             </button>
             <button
               onClick={onShuffle}
               className="px-3 py-2 rounded-xl bg-indigo-700 text-white hover:opacity-90"
             >
-              🔀 Shuffle
+              Amestecă
             </button>
             <button
               onClick={onReset}
               className="px-3 py-2 rounded-xl bg-zinc-700 text-white hover:opacity-90"
             >
-              ♻️ Reset
+              Resetează
             </button>
 
             <div className="flex items-center gap-2 ml-2">
@@ -207,7 +205,6 @@ export default function Simulation() {
         {/* Vizualizator */}
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 md:p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)]">
           <div className="relative h-72 w-full rounded-xl ring-1 ring-slate-800 overflow-hidden">
-            {/* GRID vertical finuț */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
@@ -218,9 +215,9 @@ export default function Simulation() {
             />
 
             {/* ZONA BARE PRINCIPALE */}
-            <div className="absolute inset-x-3 top-3 bottom-10 flex items-stretch gap-1 md:gap-2">
+            <div className="absolute inset-x-3 top-3 bottom-16 flex items-stretch gap-1 md:gap-2">
               {values.map((v, idx) => {
-                const h = Math.max(4, Math.round((v / maxVal) * 100)); // înălțime ∝ v
+                const h = Math.max(4, Math.round((v / maxVal) * 100)); 
                 const isA = idx === highlight.a;
                 const isB = idx === highlight.b;
                 const inRange =
@@ -228,8 +225,8 @@ export default function Simulation() {
                   idx >= highlight.range[0] &&
                   idx <= highlight.range[1];
 
-                const base = "#ef4444";   // red-500
-                const strong = "#dc2626"; // red-600
+                const base = "#ef4444";   
+                const strong = "#dc2626"; 
                 const bg = (isA || isB || inRange) ? strong : base;
 
                 return (
@@ -243,10 +240,10 @@ export default function Simulation() {
                 );
               })}
             </div>
-
             {/* BANDA INFERIOARĂ: marcaj comparat / range */}
-            <div className="absolute left-3 right-3 bottom-3 h-6">
-              <div className="flex h-full items-end gap-1 md:gap-2">
+            <div className="absolute left-3 right-3 bottom-3 h-12">
+              {/* Banda roșie */}
+              <div className="flex h-4 items-end gap-1 md:gap-2">
                 {values.map((_, idx) => {
                   const isA = idx === highlight.a;
                   const isB = idx === highlight.b;
@@ -268,10 +265,15 @@ export default function Simulation() {
                   );
                 })}
               </div>
-              {/* Index-uri subtile */}
-              <div className="mt-1 flex justify-between text-[10px] text-zinc-500 font-mono pointer-events-none">
+
+              {/* Index-uri */}
+              <div className="mt-2 flex h-6 items-center justify-between text-sm text-zinc-300 font-mono pointer-events-none select-none">
                 {values.map((_, i) => (
-                  <span key={i} style={{ width: `${100 / values.length}%`, textAlign: "center" }}>
+                  <span
+                    key={i}
+                    className="text-center"
+                    style={{ width: `${100 / values.length}%` }}
+                  >
                     {i}
                   </span>
                 ))}
