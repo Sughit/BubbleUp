@@ -832,7 +832,10 @@ export function prettifyCStyle(code, { force = false } = {}) {
 
   for (const raw of lines) {
     const line = raw.trim();
-    if (!line) { out.push(""); continue; }
+    if (!line) {
+      out.push("");
+      continue;
+    }
 
     if (line.startsWith("}")) depth = Math.max(0, depth - 1);
     out.push("  ".repeat(depth) + line);
@@ -851,12 +854,256 @@ export const getCode = (slug, langKey) => {
   else src = e.py;
 
   if (langKey === "cpp") {
-    try { return prettifyCStyle(src, { force: true }); } catch { return src; }
+    try {
+      return prettifyCStyle(src, { force: true });
+    } catch {
+      return src;
+    }
   }
   if (langKey === "java") {
-    try { return prettifyCStyle(src, { force: false }); } catch { return src; }
+    try {
+      return prettifyCStyle(src, { force: false });
+    } catch {
+      return src;
+    }
   }
   return src;
 };
 
+/* =========================================================
+   Highlight pe linia curentă (dinamic) pe baza stepKey
+   ========================================================= */
 
+const RX = (s) => new RegExp(s, "i");
+
+export const STEP_PATTERNS = {
+  bubble: {
+    init: [RX("bool\\s+sw|sw\\s*=\\s*true|sw\\s*=\\s*True")],
+    outer: [RX("for\\s*\\(int\\s+i|for\\s+i\\s+in\\s+range|while\\s+i\\s*<")],
+    compare: [RX("if\\s*\\(a\\[j\\]\\s*>\\s*a\\[j\\+1\\]\\)|if\\s*a\\[j\\]\\s*>\\s*a\\[j\\+1\\]")],
+    swap: [RX("swap|int\\s+t\\s*=\\s*a\\[j\\]")],
+    pass_done: [RX("for\\s*\\(int\\s+i|i\\s*\\+=")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  selection: {
+    init: [RX("int\\s+p\\s*=\\s*i|p\\s*=\\s*i")],
+    outer: [RX("for\\s*\\(int\\s+i|for\\s+i\\s+in\\s+range")],
+    compare: [RX("if\\s*\\(a\\[j\\]\\s*<\\s*a\\[p\\]\\)|if\\s+a\\[j\\]\\s*<\\s*a\\[p\\]")],
+    select_min: [RX("p\\s*=\\s*j|min\\s*=\\s*j")],
+    swap: [RX("if\\(p!=i\\)|if\\s*p!=i|int\\s+t\\s*=\\s*a\\[i\\]")],
+    pass_done: [RX("for\\s*\\(int\\s+i")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  insertion: {
+    init: [RX("for\\s*\\(int\\s+i\\s*=\\s*1|for\\s+i\\s+in\\s+range\\(1")],
+    pick_key: [RX("key\\s*=\\s*a\\[i\\]|key\\s*=\\s*a\\[i\\]|key=a\\[i\\]")],
+    shift: [RX("a\\[j\\+1\\]\\s*=\\s*a\\[j\\]|a\\[j\\+1\\]=a\\[j\\]")],
+    insert: [RX("a\\[j\\+1\\]\\s*=\\s*key|a\\[j\\+1\\]=key")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  gnome: {
+    init: [RX("int\\s+i\\s*=\\s*1|i=1")],
+    compare: [RX("a\\[i\\]\\s*>?=\\s*a\\[i-1\\]|a\\[i\\]\\s*>=\\s*a\\[i-1\\]")],
+    swap: [RX("int\\s+t\\s*=\\s*a\\[i\\]|a\\[i\\],a\\[i-1\\]")],
+    advance: [RX("i\\+\\+|i\\s*\\+=")],
+    done: [RX("cout<<a\\[k\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  cocktail: {
+    init: [RX("bool\\s+sw|sw=True|sw\\s*=\\s*true")],
+    forward_pass: [RX("for\\s*\\(int\\s+i=s|for\\s*i\\s+in\\s+range\\(s")],
+    backward_pass: [RX("for\\s*\\(int\\s+i=e|for\\s*i\\s+in\\s+range\\(e")],
+    compare: [RX("if\\s*\\(a\\[i\\]\\s*>\\s*a\\[i\\+1\\]\\)|if\\s*a\\[i\\]\\s*>\\s*a\\[i\\+1\\]|if\\s*a\\[i\\]\\s*<\\s*a\\[i-1\\]")],
+    swap: [RX("int\\s+t\\s*=\\s*a\\[i\\]|a\\[i\\],a\\[i\\+1\\]|a\\[i\\],a\\[i-1\\]")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  oddeven: {
+    init: [RX("sorted\\s*=\\s*false")],
+    odd_phase: [RX("for\\s*\\(int\\s+i=1|range\\(1")],
+    even_phase: [RX("for\\s*\\(int\\s+i=0|range\\(0")],
+    compare: [RX("if\\s*\\(a\\[i\\]\\s*>\\s*a\\[i\\+1\\]\\)|if\\s*a\\[i\\]\\s*>\\s*a\\[i\\+1\\]")],
+    swap: [RX("int\\s+t\\s*=\\s*a\\[i\\]|a\\[i\\],a\\[i\\+1\\]")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  shell: {
+    init: [RX("gap\\s*=\\s*1")],
+    gap_init: [RX("while\\s*\\(gap<n/3\\)|while\\s+gap<n//3")],
+    gap_loop: [RX("while\\s*\\(gap>=1\\)|while\\s+gap>=1")],
+    pick_temp: [RX("int\\s+t\\s*=\\s*a\\[i\\]|t=a\\[i\\]")],
+    shift: [RX("a\\[j\\]\\s*=\\s*a\\[j-gap\\]|a\\[j\\]=a\\[j-gap\\]")],
+    insert: [RX("a\\[j\\]\\s*=\\s*t|a\\[j\\]=t")],
+    gap_update: [RX("gap\\s*/=\\s*3|gap\\s*//=\\s*3")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  comb: {
+    init: [RX("gap\\s*=\\s*n|gap=len\\(a\\)")],
+    gap_update: [RX("gap\\s*=\\s*int\\(gap/1\\.3\\)|gap\\s*=\\s*Math|gap\\s*=\\s*\\(int\\)")],
+    compare: [RX("if\\s*\\(a\\[i\\]\\s*>\\s*a\\[i\\+gap\\]\\)|if\\s*a\\[i\\]\\s*>\\s*a\\[i\\+gap\\]")],
+    swap: [RX("int\\s+t\\s*=\\s*a\\[i\\]|a\\[i\\],a\\[i\\+gap\\]")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  merge: {
+    init: [RX("void\\s+mergeArr|def\\s+merge_sort|static\\s+void\\s+merge")],
+    split: [RX("msort\\(|rec\\(|sort\\(")],
+    merge_begin: [RX("mergeArr\\(|merge\\(")],
+    compare: [RX("L\\[i\\]\\s*<=\\s*R\\[j\\]|if\\s+a\\[i\\]\\s*<=\\s*a\\[j\\]")],
+    write: [RX("a\\[k\\+\\+\\]|a\\[k\\]=|a\\[l:r\\+1\\]=|out")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  quick: {
+    init: [RX("int\\s+part\\(|def\\s+partition|static\\s+int\\s+part")],
+    pivot: [RX("p\\s*=\\s*a\\[r\\]|pivot\\s*=\\s*arr\\[r\\]|p=a\\[r\\]")],
+    compare_pivot: [RX("if\\s*\\(a\\[j\\]\\s*<=\\s*p\\)|if\\s*a\\[j\\]\\s*<=\\s*p|if\\s*a\\[j\\]\\s*<=\\s*pivot|if\\s*a\\[j\\]\\s*<\\s*pivot")],
+    swap: [RX("int\\s+t\\s*=\\s*a\\[i\\]|swap\\(")],
+    partition: [RX("return\\s+i\\+1|return\\s+i\\+1")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  heap: {
+    init: [RX("heapify\\(|def\\s+heapify")],
+    build_heap: [RX("for\\s*\\(int\\s+i=n/2-1|for\\s+i\\s+in\\s+range\\(n//2-1")],
+    heapify_compare: [RX("if\\(l<n|if\\s+l<n")],
+    heapify_swap: [RX("if\\(mx!=i\\)|if\\s+mx!=i")],
+    extract_swap: [RX("a\\[0\\]=a\\[i\\]|a\\[0\\],a\\[i\\]")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  counting: {
+    init: [RX("int\\s+c\\[|counting\\(")],
+    count: [RX("c\\[a\\[i\\]\\]\\+\\+|count\\[")],
+    write: [RX("a\\[k\\+\\+\\]=v|a\\[k\\+\\+\\]\\s*=\\s*v|a\\[k\\]=v")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  radix: {
+    init: [RX("countingDigit\\(|def\\s+radix")],
+    digit_pass: [RX("for\\s*\\(int\\s+exp=1|while\\s+mx//exp")],
+    counting_place: [RX("out\\[--c\\[d\\]\\]|out\\[--count\\[d\\]\\]")],
+    write: [RX("a\\[i\\]=out\\[i\\]|a\\[:\\]=out")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  bucket: {
+    init: [RX("buckets|buck\\[|def\\s+bucket")],
+    bucket_place: [RX("buckets\\[idx\\]\\.append|buck\\[idx\\]")],
+    bucket_sort: [RX("\\.sort\\(|insertion\\(")],
+    write: [RX("a\\[k\\+\\+\\]=|a\\[k\\]=x")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  pigeonhole: {
+    init: [RX("holes\\[|def\\s+pigeonhole")],
+    count: [RX("holes\\[a\\[i\\]-mn\\]\\+\\+|holes\\[x-mn\\]\\+=1")],
+    write: [RX("a\\[k\\+\\+\\]=i\\+mn|a\\[k\\]=i\\+mn")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+  stooge: {
+    init: [RX("stooge\\(")],
+    swap: [RX("if\\(a\\[l\\]>a\\[r\\]\\)|if\\s+a\\[l\\]>a\\[r\\]")],
+    recurse: [RX("t=\\(r-l\\+1\\)/3|t=\\(r-l\\+1\\)//3")],
+    done: [RX("cout<<a\\[i\\]|print\\(\\*a\\)|Arrays\\.toString")],
+  },
+};
+
+export const getCodeLines = (slug, langKey) => {
+  const code = getCode(slug, langKey) || "";
+  return code.replace(/\r/g, "").split("\n");
+};
+
+export const findHighlightLine = (code, slug, langKey, stepKey) => {
+  const lines = (code || "").replace(/\r/g, "").split("\n");
+  if (!lines.length) return 0;
+
+  const algo = STEP_PATTERNS[slug];
+  const patterns = algo?.[stepKey];
+
+  // fallback: dacă nu avem pattern pt stepKey, încearcă ceva generic
+  const fallback = [
+    RX("for\\s*\\("),
+    RX("while\\s*\\("),
+    RX("if\\s*\\("),
+    RX("return"),
+  ];
+
+  const list = patterns?.length ? patterns : fallback;
+
+  // căutăm prima linie care se potrivește
+  for (let i = 0; i < lines.length; i++) {
+    const s = lines[i];
+    for (const r of list) {
+      if (r.test(s)) return i;
+    }
+  }
+
+  // dacă nu găsim nimic, highlight pe prima linie non-empty
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].trim()) return i;
+  }
+  return 0;
+};
+
+export const findHighlightRange = (code, slug, langKey, stepKey) => {
+  const lines = (code || "").replace(/\r/g, "").split("\n");
+  if (!lines.length) return { from: 0, to: 0 };
+
+  // fallback: 1 linie
+  const single = () => {
+    const i = findHighlightLine(code, slug, langKey, stepKey);
+    return { from: i, to: i };
+  };
+
+  // blocuri speciale (poți adăuga ușor și pentru alți pași)
+  const blocks = {
+    // Gnome swap block: int t=a[i]; a[i]=a[i-1]; a[i-1]=t; i--;
+    gnome: {
+      swap: {
+        start: /int\s+t\s*=\s*a\[i\]\s*;/i,
+        end: /i\s*--\s*;/i,
+      },
+    },
+
+    bubble: {
+      swap: {
+        start: /int\s+t\s*=\s*a\[j\]\s*;/i,
+        end: /sw\s*=\s*true\s*;|sw\s*=\s*True|swapped\s*=\s*true/i,
+      },
+    },
+
+    selection: {
+      swap: {
+        start: /int\s+t\s*=\s*a\[i\]\s*;/i,
+        end: /a\[p\]\s*=\s*t\s*;/i,
+      },
+    },
+
+    insertion: {
+      shift: {
+        start: /a\[j\+1\]\s*=\s*a\[j\]\s*;/i,
+        end: /j--\s*;/i,
+      },
+    },
+
+    quick: {
+      partition: {
+        start: /int\s+t\s*=\s*a\[i\+1\]\s*;/i,
+        end: /return\s+i\+1\s*;/i,
+      },
+    },
+  };
+
+  const algoBlocks = blocks[slug];
+  const b = algoBlocks?.[stepKey];
+  if (!b) return single();
+
+  let from = -1;
+  for (let i = 0; i < lines.length; i++) {
+    if (b.start.test(lines[i])) {
+      from = i;
+      break;
+    }
+  }
+  if (from === -1) return single();
+
+  let to = from;
+  for (let i = from; i < lines.length; i++) {
+    if (b.end.test(lines[i])) {
+      to = i;
+      break;
+    }
+  }
+  return { from, to };
+};
