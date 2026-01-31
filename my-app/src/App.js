@@ -4,11 +4,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './page/Home';
 import Simulation from './page/Simulation';
 import CodeView from './page/CodeView';
+import Navbar from "./component/Navbar";
 
 function App() {
   return (
     <>
       <Router>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/simulate/:algo" element={<Simulation />} />

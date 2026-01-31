@@ -1,7 +1,7 @@
 // src/page/CodeView.js
 import React, { useMemo, useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { LABELS } from "../component/simulationHelper";
+import { LABELS, ALLOWED_SLUGS } from "../component/simulationHelper";
 import { getCode, getLangsFor } from "../component/codeHelper";
 
 // Prism-based highlighter
@@ -98,6 +98,23 @@ export default function CodeView() {
         </div>
 
         <p className="text-xs text-zinc-400">Hint: poți selecta limbajul, copia sau descărca direct codul.</p>
+
+        {/* Navigare rapidă */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+          {ALLOWED_SLUGS.map((s) => (
+            <Link
+              key={s}
+              to={`/code/${s}`}
+              className={`text-xs rounded-xl border px-2.5 py-1.5 text-center ${
+                algo === s
+                  ? "border-indigo-400 bg-indigo-500/20 text-indigo-200"
+                  : "border-slate-800 bg-slate-900/40 text-zinc-300 hover:bg-slate-800/60"
+              }`}
+            >
+              {LABELS[s]}
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

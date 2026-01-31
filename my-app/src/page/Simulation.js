@@ -333,7 +333,7 @@ export default function Simulation() {
                 to={`/code/${slug}`}
                 className="ml-auto rounded-lg bg-indigo-600 px-3 py-1.5 text-xs text-white hover:opacity-90"
               >
-                Deschide CodeView
+                Vizionează doar codul
               </Link>
             </div>
 
