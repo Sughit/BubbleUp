@@ -186,7 +186,7 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => navigate(`/code/${algo.slug}`)}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm font-medium text-zinc-200 hover:bg-slate-800"
+                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm font-medium text-zinc-200 hover:bg-slate-800"
                   title="Vezi codul (C++ / Java / Python)"
                 >
                   Cod
