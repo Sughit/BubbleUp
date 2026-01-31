@@ -20,6 +20,9 @@ export default function Simulation() {
   const langs = useMemo(() => getLangsFor(slug), [slug]);
   const [lang, setLang] = useState(langs[0]?.key || "cpp");
 
+  const SPEED_MIN = 60;
+  const SPEED_MAX = 800;
+
   // stepKey curent venit din generator
   const [currentStepKey, setCurrentStepKey] = useState("init");
   const [currentRange, setCurrentRange] = useState({ from: 0, to: 0 });
@@ -224,15 +227,25 @@ export default function Simulation() {
               <span className="text-xs text-gray-300">Viteză</span>
               <input
                 type="range"
-                min="60"
-                max="800"
-                step="20"
-                value={speedMs}
-                onChange={(e) => onSpeedChange(Number(e.target.value))}
+                min="0"
+                max="100"
+                value={100 - Math.round(
+                  ((speedMs - SPEED_MIN) / (SPEED_MAX - SPEED_MIN)) * 100
+                )}
+                onChange={(e) => {
+                  const v = Number(e.target.value); 
+                  const ms =
+                    SPEED_MIN +
+                    ((100 - v) / 100) * (SPEED_MAX - SPEED_MIN);
+                  onSpeedChange(Math.round(ms));
+                }}
                 className="w-32"
-                title="ms per frame (mai mic = mai rapid)"
               />
-              <span className="text-xs text-gray-300 w-10 text-right">{speedMs}ms</span>
+              <span className="text-xs text-gray-300 w-14 text-right">
+                {Math.round(
+                  ((SPEED_MAX - speedMs) / (SPEED_MAX - SPEED_MIN)) * 100
+                )}%
+              </span>
             </div>
           </div>
         </div>
@@ -333,7 +346,7 @@ export default function Simulation() {
                 to={`/code/${slug}`}
                 className="ml-auto rounded-lg bg-indigo-600 px-3 py-1.5 text-xs text-white hover:opacity-90"
               >
-                Vizionează doar codul
+                Vezi doar codul
               </Link>
             </div>
 

@@ -3,13 +3,16 @@ import { Link, useLocation } from "react-router-dom";
 export default function Navbar() {
   const { pathname } = useLocation();
 
-  const linkClass = (path) =>
-    `px-3 py-2 rounded-lg text-sm font-medium transition
-     ${
-       pathname.startsWith(path)
-         ? "bg-indigo-500/20 text-indigo-300"
-         : "text-zinc-300 hover:bg-slate-800 hover:text-white"
-     }`;
+    const linkClass = (path, exact = false) =>
+      `px-3 py-2 rounded-lg text-sm font-medium transition ${
+        exact
+          ? pathname === path
+            ? "bg-indigo-500/20 text-indigo-300"
+            : "text-zinc-300 hover:bg-slate-800 hover:text-white"
+          : pathname.startsWith(path)
+            ? "bg-indigo-500/20 text-indigo-300"
+            : "text-zinc-300 hover:bg-slate-800 hover:text-white"
+      }`;
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-slate-950 backdrop-blur">
@@ -25,7 +28,7 @@ export default function Navbar() {
 
           {/* Links */}
           <div className="flex items-center gap-2">
-            <Link to="/" className={linkClass("/")}>
+            <Link to="/" className={linkClass("/", true)}>
               Pagina Principală
             </Link>
             <Link to="/simulate/bubble" className={linkClass("/simulate")}>
