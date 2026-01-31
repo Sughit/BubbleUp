@@ -37,6 +37,12 @@ export default function Navbar() {
             <Link to="/code/bubble" className={linkClass("/code")}>
               Cod
             </Link>
+            <Link to="/theory" className={linkClass("/theory")}>
+              Teorie
+            </Link>
+            <Link to="/about" className={linkClass("/about")}>
+              Despre
+            </Link>
           </div>
         </div>
       </div>
