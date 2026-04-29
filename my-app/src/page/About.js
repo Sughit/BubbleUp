@@ -84,12 +84,6 @@ export default function About() {
 
         </div>
 
-        {/* Footer */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-4
-                        text-sm text-zinc-400 text-center">
-          Proiect realizat în cadrul atestatului de informatică
-        </div>
-
       </div>
     </div>
   );
